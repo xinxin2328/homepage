@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>新新的引导页</title>
+    <title>个人引导页</title>
     <style>
         /* ===== 全局重置 & 基础 ===== */
         * {
@@ -11,6 +11,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             min-height: 100vh;
             display: flex;
@@ -22,6 +23,7 @@
             position: relative;
             overflow-x: hidden;
         }
+
         /* ===== 背景装饰光晕 ===== */
         body::before {
             content: '';
@@ -45,6 +47,7 @@
             pointer-events: none;
             z-index: 0;
         }
+
         /* ===== 主容器 ===== */
         .container {
             position: relative;
@@ -63,6 +66,7 @@
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
             transition: all 0.3s ease;
         }
+
         /* ===== 头部标题 ===== */
         .brand {
             font-size: 20px;
@@ -77,6 +81,7 @@
         .brand span {
             color: rgba(255, 255, 255, 0.5);
         }
+
         /* ===== 时间组件 ===== */
         .time-wrapper {
             text-align: center;
@@ -85,6 +90,7 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             margin-bottom: 32px;
         }
+
         .time-date {
             font-size: 17px;
             font-weight: 400;
@@ -92,6 +98,7 @@
             letter-spacing: 1px;
             margin-bottom: 4px;
         }
+
         .time-clock {
             font-size: 64px;
             font-weight: 600;
@@ -101,12 +108,14 @@
             line-height: 1.2;
             font-variant-numeric: tabular-nums;
         }
+
         .time-clock .seconds {
             font-size: 32px;
             font-weight: 300;
             color: rgba(255, 255, 255, 0.4);
             margin-left: 2px;
         }
+
         .time-weekday {
             font-size: 15px;
             font-weight: 400;
@@ -114,6 +123,7 @@
             margin-top: 4px;
             letter-spacing: 2px;
         }
+
         /* ===== 四宫格按钮 ===== */
         .grid {
             display: grid;
@@ -122,6 +132,7 @@
             width: 100%;
             margin-top: 6px;
         }
+
         .grid-btn {
             position: relative;
             display: flex;
@@ -147,6 +158,8 @@
             overflow: hidden;
             padding: 16px;
         }
+
+        /* 每个按钮的渐变背景（覆盖） */
         .grid-btn .btn-bg {
             position: absolute;
             inset: 0;
@@ -155,6 +168,7 @@
             transition: opacity 0.4s ease;
             z-index: 0;
         }
+
         .grid-btn .btn-content {
             position: relative;
             z-index: 1;
@@ -165,6 +179,7 @@
             width: 100%;
             height: 100%;
         }
+
         .grid-btn .btn-label {
             font-size: inherit;
             font-weight: 600;
@@ -172,6 +187,7 @@
             text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
             letter-spacing: 1px;
         }
+
         /* ---- 各按钮配色 ---- */
         .btn-1 .btn-bg {
             background: linear-gradient(145deg, #4f6ef7, #7c5cfc);
@@ -185,19 +201,23 @@
         .btn-4 .btn-bg {
             background: linear-gradient(145deg, #e870a8, #f5576c);
         }
+
         /* ---- 悬停 & 点击效果 ---- */
         .grid-btn:hover {
             transform: translateY(-6px) scale(1.02);
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
             border-color: rgba(255, 255, 255, 0.15);
         }
+
         .grid-btn:hover .btn-bg {
             opacity: 1;
         }
+
         .grid-btn:active {
             transform: translateY(-2px) scale(0.96);
             transition-duration: 0.08s;
         }
+
         /* ===== 底部 ===== */
         .footer {
             margin-top: 36px;
@@ -215,12 +235,14 @@
         .footer a:hover {
             color: rgba(255, 255, 255, 0.5);
         }
+
         /* ===== 响应式 ===== */
         @media (max-width: 500px) {
             .container {
                 padding: 22px 16px 30px;
                 border-radius: 32px;
             }
+
             .time-clock {
                 font-size: 48px;
                 letter-spacing: 2px;
@@ -231,16 +253,20 @@
             .time-date {
                 font-size: 15px;
             }
+
             .grid {
                 gap: 14px;
             }
+
             .grid-btn {
                 font-size: 18px;
             }
+
             .brand {
                 font-size: 16px;
             }
         }
+
         @media (max-width: 380px) {
             .time-clock {
                 font-size: 38px;
@@ -259,6 +285,7 @@
                 border-radius: 24px;
             }
         }
+
         /* ===== 小彩蛋：呼吸光晕 ===== */
         @keyframes pulseGlow {
             0%,
@@ -272,6 +299,7 @@
         .grid-btn:hover .btn-bg {
             animation: pulseGlow 1.8s ease-in-out infinite;
         }
+
         /* 点击波纹效果 */
         .grid-btn .ripple {
             position: absolute;
@@ -288,12 +316,180 @@
                 opacity: 0;
             }
         }
+
+        /* ============================================================
+              密码弹窗样式
+              ============================================================ */
+        /* 遮罩层 */
+        .password-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            /* 默认隐藏 */
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            padding: 20px;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .password-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.96);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* 弹窗卡片 */
+        .password-dialog {
+            width: 100%;
+            max-width: 380px;
+            padding: 32px 28px 28px;
+            background: rgba(20, 24, 40, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+            text-align: center;
+        }
+
+        .password-dialog .dialog-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .password-dialog .dialog-subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.35);
+            margin-bottom: 24px;
+            letter-spacing: 0.3px;
+        }
+
+        .password-dialog .dialog-input {
+            width: 100%;
+            padding: 14px 18px;
+            font-size: 16px;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            color: #ffffff;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            box-sizing: border-box;
+        }
+
+        .password-dialog .dialog-input:focus {
+            border-color: rgba(10, 207, 151, 0.5);
+            box-shadow: 0 0 0 3px rgba(10, 207, 151, 0.15);
+        }
+
+        .password-dialog .dialog-input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+            font-weight: 300;
+        }
+
+        .password-dialog .dialog-error {
+            font-size: 14px;
+            color: #f5576c;
+            min-height: 28px;
+            margin-top: 10px;
+            transition: opacity 0.3s;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .password-dialog .dialog-error.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .password-dialog .dialog-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .password-dialog .dialog-actions button {
+            flex: 1;
+            padding: 12px 0;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .password-dialog .btn-confirm {
+            background: linear-gradient(145deg, #0acf97, #2dd4a8);
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(10, 207, 151, 0.25);
+        }
+
+        .password-dialog .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(10, 207, 151, 0.35);
+        }
+
+        .password-dialog .btn-confirm:active {
+            transform: translateY(0px);
+        }
+
+        .password-dialog .btn-cancel {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .password-dialog .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* 弹窗响应式 */
+        @media (max-width: 420px) {
+            .password-dialog {
+                padding: 24px 20px 22px;
+                border-radius: 22px;
+            }
+            .password-dialog .dialog-title {
+                font-size: 19px;
+            }
+            .password-dialog .dialog-input {
+                padding: 12px 14px;
+                font-size: 15px;
+            }
+            .password-dialog .dialog-actions button {
+                font-size: 14px;
+                padding: 10px 0;
+            }
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
+
         <!-- 品牌标识 -->
         <div class="brand">✦ <span>导航</span></div>
+
         <!-- ===== 时间组件 ===== -->
         <div class="time-wrapper">
             <div class="time-date" id="dateDisplay">2026年7月31日 星期五</div>
@@ -302,8 +498,10 @@
             </div>
             <div class="time-weekday" id="weekdayDisplay">☀️ 美好的一天</div>
         </div>
+
         <!-- ===== 四宫格按钮 ===== -->
         <div class="grid">
+
             <!-- 按钮 1：探索 -->
             <a href="https://123.com" target="_blank" rel="noopener noreferrer" class="grid-btn btn-1">
                 <span class="btn-bg"></span>
@@ -311,13 +509,15 @@
                     <span class="btn-label">探索</span>
                 </span>
             </a>
-            <!-- 按钮 2：学习 -->
-            <a href="https://123.com" target="_blank" rel="noopener noreferrer" class="grid-btn btn-2">
+
+            <!-- 按钮 2：学习（带密码保护） -->
+            <a href="#" class="grid-btn btn-2" id="studyBtn">
                 <span class="btn-bg"></span>
                 <span class="btn-content">
                     <span class="btn-label">学习</span>
                 </span>
             </a>
+
             <!-- 按钮 3：创造 -->
             <a href="https://123.com" target="_blank" rel="noopener noreferrer" class="grid-btn btn-3">
                 <span class="btn-bg"></span>
@@ -325,6 +525,7 @@
                     <span class="btn-label">创造</span>
                 </span>
             </a>
+
             <!-- 按钮 4：工作 -->
             <a href="https://123.com" target="_blank" rel="noopener noreferrer" class="grid-btn btn-4">
                 <span class="btn-bg"></span>
@@ -332,28 +533,60 @@
                     <span class="btn-label">工作</span>
                 </span>
             </a>
+
         </div>
+
         <!-- 底部 -->
         <div class="footer">
             <a href="" target="_blank" rel="noopener noreferrer"></a> &nbsp;&nbsp; 个人引导页
         </div>
+
     </div>
+
+    <!-- ============================================================
+    密码弹窗 HTML
+    ============================================================ -->
+    <div class="password-overlay" id="passwordOverlay">
+        <div class="password-dialog" id="passwordDialog">
+            <div class="dialog-title">🔐 请输入密码</div>
+            <div class="dialog-subtitle">访问「学习」需要验证身份</div>
+
+            <input type="password" class="dialog-input" id="passwordInput"
+            placeholder="请输入密码..." autocomplete="off" />
+
+            <div class="dialog-error" id="passwordError">❌ 密码错误，请重试</div>
+
+            <div class="dialog-actions">
+                <button class="btn-cancel" id="passwordCancel">取消</button>
+                <button class="btn-confirm" id="passwordConfirm">确认</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // ============================================================
+        //  1. 实时时钟
+        // ============================================================
         function updateClock() {
             const now = new Date();
+
             const hh = String(now.getHours()).padStart(2, '0');
             const mm = String(now.getMinutes()).padStart(2, '0');
             const ss = String(now.getSeconds()).padStart(2, '0');
+
             document.getElementById('hours').textContent = hh;
             document.getElementById('minutes').textContent = mm;
             document.getElementById('seconds').textContent = ss;
+
             const year = now.getFullYear();
             const month = now.getMonth() + 1;
             const day = now.getDate();
             const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
             const wd = weekdays[now.getDay()];
+
             document.getElementById('dateDisplay').textContent =
                 `${year}年${month}月${day}日 ${wd}`;
+
             const tips = ['🌙 夜深了新新', '🌅 早安新新', '☀️ 上午好新新', '🌤️ 下午好新新', '🌇 傍晚好新新', '🌃 晚上好新新'];
             const hour = now.getHours();
             let tipIndex = 0;
@@ -364,8 +597,13 @@
             else if (hour >= 20 || hour < 6) tipIndex = 5;
             document.getElementById('weekdayDisplay').textContent = tips[tipIndex];
         }
+
         updateClock();
         setInterval(updateClock, 1000);
+
+        // ============================================================
+        //  2. 点击波纹效果
+        // ============================================================
         document.querySelectorAll('.grid-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 const rect = this.getBoundingClientRect();
@@ -381,6 +619,10 @@
                 setTimeout(() => ripple.remove(), 700);
             });
         });
+
+        // ============================================================
+        //  3. 键盘快捷键 1-4
+        // ============================================================
         document.addEventListener('keydown', (e) => {
             const key = e.key;
             const btns = document.querySelectorAll('.grid-btn');
@@ -392,8 +634,126 @@
                 }
             }
         });
-        console.log('%c🌟 个人引导页 (纯文字按钮)', 'font-size:24px; font-weight:bold; color:#7c5cfc;');
-        console.log('%c点击按钮或按键盘 1 2 3 4 快速跳转到 123.com', 'font-size:14px; color:#aaa;');
+
+        // ============================================================
+        //  4. 密码保护功能（学习按钮）
+        // ============================================================
+
+        // ---------- 配置 ----------
+        // ★ 在这里修改密码 ★
+        const STUDY_PASSWORD = 'study2026';
+
+        // ---------- DOM 引用 ----------
+        const studyBtn = document.getElementById('studyBtn');
+        const overlay = document.getElementById('passwordOverlay');
+        const passwordInput = document.getElementById('passwordInput');
+        const errorMsg = document.getElementById('passwordError');
+        const confirmBtn = document.getElementById('passwordConfirm');
+        const cancelBtn = document.getElementById('passwordCancel');
+
+        let pendingResolve = null; // 用于 resolve 当前验证 Promise
+
+        // ---------- 工具函数 ----------
+        function openDialog() {
+            overlay.classList.add('active');
+            passwordInput.value = '';
+            errorMsg.classList.remove('show');
+            // 聚焦输入框（需要等动画完成）
+            setTimeout(() => passwordInput.focus(), 100);
+            // 返回一个 Promise，在密码验证通过或取消时 resolve
+            return new Promise((resolve) => {
+                pendingResolve = resolve;
+            });
+        }
+
+        function closeDialog() {
+            overlay.classList.remove('active');
+            pendingResolve = null;
+        }
+
+        function verifyPassword(input) {
+            return input === STUDY_PASSWORD;
+        }
+
+        function showError() {
+            errorMsg.classList.add('show');
+            passwordInput.value = '';
+            passwordInput.focus();
+            // 轻微抖动效果
+            passwordInput.style.animation = 'none';
+            setTimeout(() => {
+                passwordInput.style.animation = 'shake 0.3s ease';
+            }, 10);
+        }
+
+        function handleConfirm() {
+            const input = passwordInput.value;
+            if (verifyPassword(input)) {
+                // 密码正确 → 关闭弹窗，跳转
+                closeDialog();
+                // 打开目标链接
+                window.open('https://123.com', '_blank');
+            } else {
+                showError();
+            }
+        }
+
+        function handleCancel() {
+            closeDialog();
+        }
+
+        // ---------- 事件绑定 ----------
+
+        // 点击学习按钮 → 打开密码弹窗
+        studyBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // 阻止默认跳转
+            openDialog();
+        });
+
+        // 确认按钮
+        confirmBtn.addEventListener('click', handleConfirm);
+
+        // 取消按钮
+        cancelBtn.addEventListener('click', handleCancel);
+
+        // 输入框按回车 → 确认
+        passwordInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleConfirm();
+            }
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                handleCancel();
+            }
+        });
+
+        // 点击遮罩 → 取消
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) {
+                handleCancel();
+            }
+        });
+
+        // ---------- 添加抖动动画（CSS 动态注入） ----------
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = `
+                    @keyframes shake {
+                        0%, 100% { transform: translateX(0); }
+                        20% { transform: translateX(-8px); }
+                        40% { transform: translateX(8px); }
+                        60% { transform: translateX(-6px); }
+                        80% { transform: translateX(6px); }
+                    }
+                `;
+        document.head.appendChild(styleSheet);
+
+        // ---------- 控制台提示 ----------
+        console.log('%c🌟 个人引导页 (纯文字按钮 + 学习按钮密码保护)', 'font-size:24px; font-weight:bold; color:#7c5cfc;');
+        console.log('%c点击「学习」按钮需要密码，默认密码: study2026', 'font-size:14px; color:#0acf97;');
+        console.log('%c按键盘 1-4 快速跳转，其中 2 对应「学习」会触发密码验证', 'font-size:14px; color:#aaa;');
+        console.log('%c💡 如需修改密码，请搜索 STUDY_PASSWORD 变量', 'font-size:14px; color:#f7a04f;');
     </script>
+
 </body>
 </html>
