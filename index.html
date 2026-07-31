@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>个人引导页</title>
+    <style>
+        /* ===== 全局重置 & 基础 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(145deg, #0b0e1a 0%, #1a1e2f 45%, #2d2b4a 100%);
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        /* ===== 背景装饰光晕 ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -30%;
+            left: -20%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            right: -20%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle, rgba(245, 87, 108, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        /* ===== 主容器 ===== */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px 40px;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 48px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            transition: all 0.3s ease;
+        }
+        /* ===== 头部标题 ===== */
+        .brand {
+            font-size: 20px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.25);
+            margin-bottom: 12px;
+            user-select: none;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+        .brand span {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        /* ===== 时间组件 ===== */
+        .time-wrapper {
+            text-align: center;
+            padding: 20px 10px 18px;
+            width: 100%;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 32px;
+        }
+        .time-date {
+            font-size: 17px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+        .time-clock {
+            font-size: 64px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 4px;
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.25), 0 0 60px rgba(102, 126, 234, 0.08);
+            line-height: 1.2;
+            font-variant-numeric: tabular-nums;
+        }
+        .time-clock .seconds {
+            font-size: 32px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.4);
+            margin-left: 2px;
+        }
+        .time-weekday {
+            font-size: 15px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.35);
+            margin-top: 4px;
+            letter-spacing: 2px;
+        }
+        /* ===== 四宫格按钮 ===== */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            width: 100%;
+            margin-top: 6px;
+        }
+        .grid-btn {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            border-radius: 24px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: 600;
+            font-size: 22px;
+            letter-spacing: 1px;
+            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: none;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            padding: 16px;
+        }
+        .grid-btn .btn-bg {
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            opacity: 0.75;
+            transition: opacity 0.4s ease;
+            z-index: 0;
+        }
+        .grid-btn .btn-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+        .grid-btn .btn-label {
+            font-size: inherit;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+            letter-spacing: 1px;
+        }
+        /* ---- 各按钮配色 ---- */
+        .btn-1 .btn-bg {
+            background: linear-gradient(145deg, #4f6ef7, #7c5cfc);
+        }
+        .btn-2 .btn-bg {
+            background: linear-gradient(145deg, #0acf97, #2dd4a8);
+        }
+        .btn-3 .btn-bg {
+            background: linear-gradient(145deg, #f7a04f, #f57c5a);
+        }
+        .btn-4 .btn-bg {
+            background: linear-gradient(145deg, #e870a8, #f5576c);
+        }
+        /* ---- 悬停 & 点击效果 ---- */
+        .grid-btn:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .grid-btn:hover .btn-bg {
+            opacity: 1;
+        }
+        .grid-btn:active {
+            transform: translateY(-2px) scale(0.96);
+            transition-duration: 0.08s;
+        }
+        /* ===== 底部 ===== */
+        .footer {
+            margin-top: 36px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.15);
+            letter-spacing: 1px;
+            user-select: none;
+            font-weight: 300;
+        }
+        .footer a {
+            color: rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .footer a:hover {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        /* ===== 响应式 ===== */
+        @media (max-width: 500px) {
+            .container {
+                padding: 22px 16px 30px;
+                border-radius: 32px;
+            }
+            .time-clock {
+                font-size: 48px;
+                letter-spacing: 2px;
+            }
+            .time-clock .seconds {
+                font-size: 24px;
+            }
+            .time-date {
+                font-size: 15px;
+            }
+            .grid {
+                gap: 14px;
+            }
+            .grid-btn {
+                font-size: 18px;
+            }
+            .brand {
+                font-size: 16px;
+            }
+        }
+        @media (max-width: 380px) {
+            .time-clock {
+                font-size: 38px;
+            }
+            .time-clock .seconds {
+                font-size: 18px;
+            }
+            .grid {
+                gap: 10px;
+            }
+            .grid-btn {
+                font-size: 16px;
+            }
+            .container {
+                padding: 16px 12px 24px;
+                border-radius: 24px;
+            }
+        }
+        /* ===== 小彩蛋：呼吸光晕 ===== */
+        @keyframes pulseGlow {
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+        .grid-btn:hover .btn-bg {
+            animation: pulseGlow 1.8s ease-in-out infinite;
+        }
+        /* 点击波纹效果 */
+        .grid-btn .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(0);
+            animation: rippleAnim 0.6s linear;
+            pointer-events: none;
+            z-index: 2;
+        }
+        @keyframes rippleAnim {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 品牌标识 -->
+        <div class="brand">✦ <span>导航</span></div>
+        <!-- ===== 时间组件 ===== -->
+        <div class="time-wrapper">
+            <div class="time-date" id="dateDisplay">2026年7月31日 星期五</div>
+            <div class="time-clock">
+                <span id="hours">00</span>:<span id="minutes">00</span>:<span class="seconds" id="seconds">00</span>
+            </div>
+            <div class="time-weekday" id="weekdayDisplay">☀️ 美好的一天</div>
+        </div>
+        <!-- ===== 四宫格按钮 ===== -->
+        <div class="grid">
+            <!-- 按钮 1：探索 -->
+            <a href="https://123.com" target="_blank" rel="noopener noreferrer" class="grid-btn btn-1">
+                <span class="btn-bg"></span>
+                <span class="btn-content">
+                    <span class="btn-label">探索</span>
+                </span>
+            </a>
+            <!-- 按钮 2：学习 -->
+            <a href="https://123.com" target="_blank" rel="noopener noreferrer" class="grid-btn btn-2">
+                <span class="btn-bg"></span>
+                <span class="btn-content">
+                    <span class="btn-label">学习</span>
+                </span>
+            </a>
+            <!-- 按钮 3：创造 -->
+            <a href="https://123.com" target="_blank" rel="noopener noreferrer" class="grid-btn btn-3">
+                <span class="btn-bg"></span>
+                <span class="btn-content">
+                    <span class="btn-label">创造</span>
+                </span>
+            </a>
+            <!-- 按钮 4：工作 -->
+            <a href="https://123.com" target="_blank" rel="noopener noreferrer" class="grid-btn btn-4">
+                <span class="btn-bg"></span>
+                <span class="btn-content">
+                    <span class="btn-label">工作</span>
+                </span>
+            </a>
+        </div>
+        <!-- 底部 -->
+        <div class="footer">
+            <a href="" target="_blank" rel="noopener noreferrer"></a> &nbsp;&nbsp; 个人引导页
+        </div>
+    </div>
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            const ss = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('hours').textContent = hh;
+            document.getElementById('minutes').textContent = mm;
+            document.getElementById('seconds').textContent = ss;
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const wd = weekdays[now.getDay()];
+            document.getElementById('dateDisplay').textContent =
+                `${year}年${month}月${day}日 ${wd}`;
+            const tips = ['🌙 夜深了新新', '🌅 早安新新', '☀️ 上午好新新', '🌤️ 下午好新新', '🌇 傍晚好新新', '🌃 晚上好新新'];
+            const hour = now.getHours();
+            let tipIndex = 0;
+            if (hour >= 6 && hour < 9) tipIndex = 1;
+            else if (hour >= 9 && hour < 12) tipIndex = 2;
+            else if (hour >= 12 && hour < 18) tipIndex = 3;
+            else if (hour >= 18 && hour < 20) tipIndex = 4;
+            else if (hour >= 20 || hour < 6) tipIndex = 5;
+            document.getElementById('weekdayDisplay').textContent = tips[tipIndex];
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+        document.querySelectorAll('.grid-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const rect = this.getBoundingClientRect();
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 700);
+            });
+        });
+        document.addEventListener('keydown', (e) => {
+            const key = e.key;
+            const btns = document.querySelectorAll('.grid-btn');
+            const map = { '1': 0, '2': 1, '3': 2, '4': 3 };
+            if (key in map) {
+                const idx = map[key];
+                if (btns[idx]) {
+                    btns[idx].click();
+                }
+            }
+        });
+        console.log('%c🌟 个人引导页 (纯文字按钮)', 'font-size:24px; font-weight:bold; color:#7c5cfc;');
+        console.log('%c点击按钮或按键盘 1 2 3 4 快速跳转到 123.com', 'font-size:14px; color:#aaa;');
+    </script>
+</body>
+</html>
