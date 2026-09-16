@@ -1,742 +1,968 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>个人引导页</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新新导航 - 现代化首页</title>
     <style>
-        /* ===== 全局重置 & 基础 ===== */
+        :root {
+            --primary-color: #1e7ba1;
+            --primary-light: #4db8e8;
+            --text-main: #e2e8f0;
+            --text-sub: #a0aec0;
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 20px 25px -5px rgba(78, 184, 232, 0.3), 0 10px 10px -5px rgba(78, 184, 232, 0.15);
+            --mouse-x: 50vw;
+            --mouse-y: 50vh;
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
         body {
-            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
-            background: linear-gradient(145deg, #0b0e1a 0%, #1a1e2f 45%, #2d2b4a 100%);
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
+            min-height: 100vh;
+            padding: 30px 20px;
+            background-color: #0a1929;
+            color: var(--text-main);
+            overflow: hidden;
         }
 
-        /* ===== 背景装饰光晕 ===== */
-        body::before {
-            content: '';
+        #bg-particles {
             position: fixed;
-            top: -30%;
-            left: -20%;
-            width: 80%;
-            height: 80%;
-            background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
             pointer-events: none;
-            z-index: 0;
-        }
-        body::after {
-            content: '';
-            position: fixed;
-            bottom: -30%;
-            right: -20%;
-            width: 80%;
-            height: 80%;
-            background: radial-gradient(circle, rgba(245, 87, 108, 0.12) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
         }
 
-        /* ===== 主容器 ===== */
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 600px;
+        .interactive-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .interactive-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                600px circle at var(--mouse-x) var(--mouse-y),
+                rgba(78, 184, 232, 0.15),
+                transparent 80%
+            );
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(20, 33, 51, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
             display: flex;
             flex-direction: column;
+            gap: 32px;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(74, 100, 130, 0.3);
+        }
+
+        .top-section {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 24px;
+        }
+
+        .left-column, .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, rgba(30, 45, 66, 0.8) 0%, rgba(22, 35, 54, 0.8) 100%);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(74, 100, 130, 0.3);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .welcome-card h1 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+            min-height: 32px;
+            line-height: 1.35;
+            display: flex;
             align-items: center;
-            padding: 30px 20px 40px;
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 48px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-            transition: all 0.3s ease;
+            flex-wrap: wrap;
         }
 
-        /* ===== 头部标题 ===== */
-        .brand {
-            font-size: 20px;
+        #typed-text {
+            display: inline;
+        }
+
+        #cursor {
+            display: inline-block;
+            width: 2px;
+            height: 22px;
+            background: linear-gradient(180deg, var(--primary-color), var(--primary-light));
+            margin-left: 4px;
+            border-radius: 2px;
+            vertical-align: middle;
+            transform: translateY(-1px);
+            animation: blink 1s step-end infinite;
+            transition: opacity 2s ease-out;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            50.01%, 100% { opacity: 0; }
+        }
+
+        .daily-quote {
+            font-size: 15px;
+            color: var(--text-sub);
+            line-height: 1.7;
+            position: relative;
+            padding-left: 18px;
+            min-height: 56px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .daily-quote::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 4px;
+            bottom: 4px;
+            width: 3px;
+            background: linear-gradient(180deg, var(--primary-light), rgba(78, 184, 232, 0.2));
+            border-radius: 3px;
+        }
+
+        .daily-quote .quote-text {
+            display: block;
+            font-style: italic;
+            color: var(--text-main);
             font-weight: 500;
-            letter-spacing: 2px;
-            color: rgba(255, 255, 255, 0.25);
-            margin-bottom: 12px;
-            user-select: none;
-            text-transform: uppercase;
-            font-weight: 300;
-        }
-        .brand span {
-            color: rgba(255, 255, 255, 0.5);
         }
 
-        /* ===== 时间组件 ===== */
-        .time-wrapper {
-            text-align: center;
-            padding: 20px 10px 18px;
-            width: 100%;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            margin-bottom: 32px;
+        .daily-quote .quote-from {
+            display: block;
+            margin-top: 6px;
+            font-size: 13px;
+            color: var(--text-sub);
+            text-align: right;
+            opacity: 0.85;
         }
 
-        .time-date {
-            font-size: 17px;
-            font-weight: 400;
-            color: rgba(255, 255, 255, 0.5);
-            letter-spacing: 1px;
+        .info-card {
+            background: rgba(30, 45, 66, 0.7);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(74, 100, 130, 0.4);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .info-icon {
+            font-size: 24px;
+            background: rgba(45, 65, 90, 0.8);
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+
+        .info-text h3 {
+            font-size: 13px;
+            color: var(--text-sub);
+            font-weight: 500;
             margin-bottom: 4px;
         }
 
-        .time-clock {
-            font-size: 64px;
+        .info-text p {
+            font-size: 16px;
             font-weight: 600;
-            color: #ffffff;
-            letter-spacing: 4px;
-            text-shadow: 0 0 30px rgba(102, 126, 234, 0.25), 0 0 60px rgba(102, 126, 234, 0.08);
-            line-height: 1.2;
-            font-variant-numeric: tabular-nums;
+            color: var(--text-main);
         }
 
-        .time-clock .seconds {
-            font-size: 32px;
-            font-weight: 300;
-            color: rgba(255, 255, 255, 0.4);
-            margin-left: 2px;
-        }
-
-        .time-weekday {
-            font-size: 15px;
-            font-weight: 400;
-            color: rgba(255, 255, 255, 0.35);
-            margin-top: 4px;
-            letter-spacing: 2px;
-        }
-
-        /* ===== 四宫格按钮 ===== */
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 18px;
-            width: 100%;
-            margin-top: 6px;
-        }
-
-        .grid-btn {
-            position: relative;
+        .search-section {
             display: flex;
-            flex-direction: column;
             justify-content: center;
-            align-items: center;
-            aspect-ratio: 1 / 1;
+        }
+
+        .search-box {
             width: 100%;
-            border-radius: 24px;
-            text-decoration: none;
-            color: #fff;
-            font-weight: 600;
-            font-size: 22px;
-            letter-spacing: 1px;
-            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            max-width: 720px;
+            display: flex;
+            align-items: center;
+            background: rgba(30, 45, 66, 0.7);
+            border: 1.5px solid rgba(74, 100, 130, 0.4);
+            border-radius: 50px;
+            padding: 6px 6px 6px 22px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            gap: 12px;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 4px rgba(78, 184, 232, 0.15), var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .search-logo {
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .search-box:focus-within .search-logo {
+            transform: scale(1.1) rotate(-8deg);
+        }
+
+        #search-input {
+            flex: 1;
             border: none;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            padding: 16px;
-        }
-
-        /* 每个按钮的渐变背景（覆盖） */
-        .grid-btn .btn-bg {
-            position: absolute;
-            inset: 0;
-            border-radius: 24px;
-            opacity: 0.75;
-            transition: opacity 0.4s ease;
-            z-index: 0;
-        }
-
-        .grid-btn .btn-content {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-        }
-
-        .grid-btn .btn-label {
-            font-size: inherit;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.95);
-            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
-            letter-spacing: 1px;
-        }
-
-        /* ---- 各按钮配色 ---- */
-        .btn-1 .btn-bg {
-            background: linear-gradient(145deg, #4f6ef7, #7c5cfc);
-        }
-        .btn-2 .btn-bg {
-            background: linear-gradient(145deg, #0acf97, #2dd4a8);
-        }
-        .btn-3 .btn-bg {
-            background: linear-gradient(145deg, #f7a04f, #f57c5a);
-        }
-        .btn-4 .btn-bg {
-            background: linear-gradient(145deg, #e870a8, #f5576c);
-        }
-
-        /* ---- 悬停 & 点击效果 ---- */
-        .grid-btn:hover {
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-            border-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .grid-btn:hover .btn-bg {
-            opacity: 1;
-        }
-
-        .grid-btn:active {
-            transform: translateY(-2px) scale(0.96);
-            transition-duration: 0.08s;
-        }
-
-        /* ===== 底部 ===== */
-        .footer {
-            margin-top: 36px;
-            font-size: 13px;
-            color: rgba(255, 255, 255, 0.15);
-            letter-spacing: 1px;
-            user-select: none;
-            font-weight: 300;
-        }
-        .footer a {
-            color: rgba(255, 255, 255, 0.2);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        .footer a:hover {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        /* ===== 响应式 ===== */
-        @media (max-width: 500px) {
-            .container {
-                padding: 22px 16px 30px;
-                border-radius: 32px;
-            }
-
-            .time-clock {
-                font-size: 48px;
-                letter-spacing: 2px;
-            }
-            .time-clock .seconds {
-                font-size: 24px;
-            }
-            .time-date {
-                font-size: 15px;
-            }
-
-            .grid {
-                gap: 14px;
-            }
-
-            .grid-btn {
-                font-size: 18px;
-            }
-
-            .brand {
-                font-size: 16px;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .time-clock {
-                font-size: 38px;
-            }
-            .time-clock .seconds {
-                font-size: 18px;
-            }
-            .grid {
-                gap: 10px;
-            }
-            .grid-btn {
-                font-size: 16px;
-            }
-            .container {
-                padding: 16px 12px 24px;
-                border-radius: 24px;
-            }
-        }
-
-        /* ===== 小彩蛋：呼吸光晕 ===== */
-        @keyframes pulseGlow {
-            0%,
-            100% {
-                opacity: 0.6;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
-        .grid-btn:hover .btn-bg {
-            animation: pulseGlow 1.8s ease-in-out infinite;
-        }
-
-        /* 点击波纹效果 */
-        .grid-btn .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.25);
-            transform: scale(0);
-            animation: rippleAnim 0.6s linear;
-            pointer-events: none;
-            z-index: 2;
-        }
-        @keyframes rippleAnim {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
-
-        /* ============================================================
-              密码弹窗样式
-              ============================================================ */
-        /* 遮罩层 */
-        .password-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            display: none;
-            /* 默认隐藏 */
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-            padding: 20px;
-            animation: fadeIn 0.25s ease;
-        }
-
-        .password-overlay.active {
-            display: flex;
-        }
-
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.96);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        /* 弹窗卡片 */
-        .password-dialog {
-            width: 100%;
-            max-width: 380px;
-            padding: 32px 28px 28px;
-            background: rgba(20, 24, 40, 0.85);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-radius: 28px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
-            text-align: center;
-        }
-
-        .password-dialog .dialog-title {
-            font-size: 22px;
-            font-weight: 600;
-            color: #ffffff;
-            letter-spacing: 1px;
-            margin-bottom: 6px;
-        }
-
-        .password-dialog .dialog-subtitle {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.35);
-            margin-bottom: 24px;
+            outline: none;
+            background: transparent;
+            font-size: 15px;
+            color: var(--text-main);
+            padding: 10px 0;
+            font-family: inherit;
             letter-spacing: 0.3px;
         }
 
-        .password-dialog .dialog-input {
-            width: 100%;
-            padding: 14px 18px;
-            font-size: 16px;
-            font-family: inherit;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
+        #search-input::placeholder {
+            color: #718096;
+            transition: color 0.3s ease;
+        }
+
+        .search-box:focus-within #search-input::placeholder {
+            color: #4a5568;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
             color: #ffffff;
-            outline: none;
-            transition: border-color 0.3s, box-shadow 0.3s;
-            box-sizing: border-box;
-        }
-
-        .password-dialog .dialog-input:focus {
-            border-color: rgba(10, 207, 151, 0.5);
-            box-shadow: 0 0 0 3px rgba(10, 207, 151, 0.15);
-        }
-
-        .password-dialog .dialog-input::placeholder {
-            color: rgba(255, 255, 255, 0.2);
-            font-weight: 300;
-        }
-
-        .password-dialog .dialog-error {
-            font-size: 14px;
-            color: #f5576c;
-            min-height: 28px;
-            margin-top: 10px;
-            transition: opacity 0.3s;
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .password-dialog .dialog-error.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .password-dialog .dialog-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .password-dialog .dialog-actions button {
-            flex: 1;
-            padding: 12px 0;
             border: none;
-            border-radius: 14px;
-            font-size: 16px;
+            border-radius: 50px;
+            padding: 11px 26px;
+            font-size: 14px;
             font-weight: 600;
-            font-family: inherit;
             cursor: pointer;
             transition: all 0.3s ease;
+            letter-spacing: 1.5px;
+            font-family: inherit;
+            box-shadow: 0 4px 12px rgba(78, 184, 232, 0.25);
         }
 
-        .password-dialog .btn-confirm {
-            background: linear-gradient(145deg, #0acf97, #2dd4a8);
-            color: #fff;
-            box-shadow: 0 8px 20px rgba(10, 207, 151, 0.25);
+        .search-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(78, 184, 232, 0.4);
         }
 
-        .password-dialog .btn-confirm:hover {
+        .search-btn:active {
+            transform: scale(0.98);
+        }
+
+        .middle-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .nav-button {
+            aspect-ratio: 1 / 1;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 20px;
+            letter-spacing: 2px;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+
+        .nav-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .nav-button:hover::before {
+            left: 100%;
+        }
+
+        .bottom-section {
+            display: flex;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .wechat-card {
+            background: rgba(30, 45, 66, 0.7);
+            border: 1px solid rgba(74, 100, 130, 0.4);
+            padding: 12px 32px;
+            border-radius: 50px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-sub);
+            font-size: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .wechat-card:hover {
+            box-shadow: var(--shadow-md);
             transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(10, 207, 151, 0.35);
+            border-color: var(--primary-light);
         }
 
-        .password-dialog .btn-confirm:active {
-            transform: translateY(0px);
+        .wechat-card:active {
+            transform: translateY(1px) scale(0.98);
         }
 
-        .password-dialog .btn-cancel {
-            background: rgba(255, 255, 255, 0.05);
-            color: rgba(255, 255, 255, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+        .wechat-icon {
+            color: #07C160;
+            font-size: 20px;
+            font-weight: bold;
         }
 
-        .password-dialog .btn-cancel:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.8);
+        .wechat-card b {
+            color: var(--text-main);
+            font-weight: 600;
         }
 
-        /* 弹窗响应式 */
-        @media (max-width: 420px) {
-            .password-dialog {
-                padding: 24px 20px 22px;
-                border-radius: 22px;
+        #toast {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(78, 184, 232, 0.95);
+            color: #0a1929;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px -5px rgba(78, 184, 232, 0.4);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 24px;
+                gap: 26px;
             }
-            .password-dialog .dialog-title {
-                font-size: 19px;
+            .top-section {
+                grid-template-columns: 1fr;
             }
-            .password-dialog .dialog-input {
-                padding: 12px 14px;
-                font-size: 15px;
+            .middle-section {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
             }
-            .password-dialog .dialog-actions button {
+            .nav-button {
+                font-size: 18px;
+                border-radius: 16px;
+            }
+            .search-box {
+                padding: 5px 5px 5px 18px;
+                gap: 8px;
+            }
+            .search-btn {
+                padding: 10px 20px;
+                font-size: 13px;
+                letter-spacing: 1px;
+            }
+            #search-input {
                 font-size: 14px;
-                padding: 10px 0;
+            }
+            .daily-quote {
+                font-size: 14px;
+                min-height: 52px;
+            }
+            .welcome-card h1 {
+                font-size: 20px;
+                min-height: 28px;
+            }
+            #cursor {
+                height: 18px;
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <canvas id="bg-particles"></canvas>
+    <div class="interactive-bg"></div>
 
-        <!-- 品牌标识 -->
-        <div class="brand">✦ <span>导航</span></div>
-
-        <!-- ===== 时间组件 ===== -->
-        <div class="time-wrapper">
-            <div class="time-date" id="dateDisplay">2026年7月31日 星期五</div>
-            <div class="time-clock">
-                <span id="hours">00</span>:<span id="minutes">00</span>:<span class="seconds" id="seconds">00</span>
+    <div class="app-container">
+        <div class="top-section">
+            <div class="left-column">
+                <div class="welcome-card">
+                    <h1>
+                        <span id="typed-text"></span><span id="cursor"></span>
+                    </h1>
+                    <div class="daily-quote" id="daily-quote">
+                        <span class="quote-text"></span>
+                        <span class="quote-from"></span>
+                    </div>
+                </div>
             </div>
-            <div class="time-weekday" id="weekdayDisplay">☀️ 美好的一天</div>
+
+            <div class="right-column">
+                <div class="info-card">
+                    <div class="info-item">
+                        <div class="info-icon">🕒</div>
+                        <div class="info-text">
+                            <h3>时间</h3>
+                            <p id="clock">加载中...</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">⛅</div>
+                        <div class="info-text">
+                            <h3>天气</h3>
+                            <p id="weather">正在获取位置和天气...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- ===== 四宫格按钮 ===== -->
-        <div class="grid">
-
-            <!-- 按钮 1：网盘 -->
-            <a href="http://cntwo.wanwr.com:30167" target="_blank" rel="noopener noreferrer" class="grid-btn btn-1">
-                <span class="btn-bg"></span>
-                <span class="btn-content">
-                    <span class="btn-label">网盘</span>
-                </span>
-            </a>
-
-            <!-- 按钮 2：飞牛（带密码保护） -->
-            <a href="#" class="grid-btn btn-2" id="studyBtn">
-                <span class="btn-bg"></span>
-                <span class="btn-content">
-                    <span class="btn-label">飞牛</span>
-                </span>
-            </a>
-
-            <!-- 按钮 3：待定 -->
-            <a href="http://cntwo.wanwr.com:30169" target="_blank" rel="noopener noreferrer" class="grid-btn btn-3">
-                <span class="btn-bg"></span>
-                <span class="btn-content">
-                    <span class="btn-label">待定代码525</span>
-                </span>
-            </a>
-
-            <!-- 按钮 4：待定 -->
-            <a href="https://123.com" target="_blank" rel="noopener noreferrer" class="grid-btn btn-4">
-                <span class="btn-bg"></span>
-                <span class="btn-content">
-                    <span class="btn-label">待定代码533</span>
-                </span>
-            </a>
-
+        <div class="search-section">
+            <div class="search-box">
+                <svg class="search-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 2V18.5L9.5 22L20 17.5V10.5L13 8V4.5L4 2Z" fill="#008373"/>
+                    <path d="M4 2V18.5L9.5 22L20 17.5L13 14V8L4 2Z" fill="#00B7C3" opacity="0.85"/>
+                </svg>
+                <input type="text" id="search-input" placeholder="使用 Bing 搜索..." autocomplete="off" spellcheck="false">
+                <button class="search-btn" id="search-btn">搜索</button>
+            </div>
         </div>
 
-        <!-- 底部 -->
-        <div class="footer">
-            <a href="" target="_blank" rel="noopener noreferrer"></a> &nbsp;&nbsp; 个人引导页
+        <div class="middle-section">
+            <a href="http://cntwo.wanwr.com:30167/" target="_blank" class="nav-button">导航一</a>
+            <a href="http://cntwo.wanwr.com:30168/" target="_blank" class="nav-button">导航二</a>
+            <!-- 导航三：已改为新链接 -->
+            <a href="http://cntwo.wanwr.com:30169/" target="_blank" class="nav-button">导航三</a>
+            <a href="http://123.com" target="_blank" class="nav-button">导航四</a>
         </div>
 
-    </div>
-
-    <!-- ============================================================
-    密码弹窗 HTML
-    ============================================================ -->
-    <div class="password-overlay" id="passwordOverlay">
-        <div class="password-dialog" id="passwordDialog">
-            <div class="dialog-title">🔐 请输入密码</div>
-            <div class="dialog-subtitle">访问「学习」需要验证身份</div>
-
-            <input type="password" class="dialog-input" id="passwordInput"
-            placeholder="请输入密码..." autocomplete="off" />
-
-            <div class="dialog-error" id="passwordError">❌ 密码错误，请重试</div>
-
-            <div class="dialog-actions">
-                <button class="btn-cancel" id="passwordCancel">取消</button>
-                <button class="btn-confirm" id="passwordConfirm">确认</button>
+        <div class="bottom-section">
+            <div class="wechat-card" id="wechat-copy" title="点击复制微信号">
+                <span class="wechat-icon">💬</span>
+                微信：<b>xin439587975</b>
             </div>
         </div>
     </div>
+
+    <div id="toast">✅ 已复制微信号，请前往微信添加</div>
 
     <script>
-        // ============================================================
-        //  1. 实时时钟
-        // ============================================================
-        function updateClock() {
-            const now = new Date();
+        // ==========================================
+        // 1. 一言 + 打字机联动
+        // ==========================================
+        const dailyQuoteEl = document.getElementById('daily-quote');
+        const quoteTextEl = dailyQuoteEl.querySelector('.quote-text');
+        const quoteFromEl = dailyQuoteEl.querySelector('.quote-from');
 
-            const hh = String(now.getHours()).padStart(2, '0');
-            const mm = String(now.getMinutes()).padStart(2, '0');
-            const ss = String(now.getSeconds()).padStart(2, '0');
+        const localQuotes = [
+            { text: '生活明朗，万物可爱。', from: '网络' },
+            { text: '路虽远行则将至，事虽难做则必成。', from: '《荀子·修身》' },
+            { text: '星光不问赶路人，时光不负有心人。', from: '网络' },
+            { text: '愿你出走半生，归来仍是少年。', from: '网络' },
+            { text: '山重水复疑无路，柳暗花明又一村。', from: '陆游《游山西村》' }
+        ];
 
-            document.getElementById('hours').textContent = hh;
-            document.getElementById('minutes').textContent = mm;
-            document.getElementById('seconds').textContent = ss;
-
-            const year = now.getFullYear();
-            const month = now.getMonth() + 1;
-            const day = now.getDate();
-            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-            const wd = weekdays[now.getDay()];
-
-            document.getElementById('dateDisplay').textContent =
-                `${year}年${month}月${day}日 ${wd}`;
-
-            const tips = ['🌙 夜深了新新', '🌅 早安新新', '☀️ 上午好新新', '🌤️ 下午好新新', '🌇 傍晚好新新', '🌃 晚上好新新'];
-            const hour = now.getHours();
-            let tipIndex = 0;
-            if (hour >= 6 && hour < 9) tipIndex = 1;
-            else if (hour >= 9 && hour < 12) tipIndex = 2;
-            else if (hour >= 12 && hour < 18) tipIndex = 3;
-            else if (hour >= 18 && hour < 20) tipIndex = 4;
-            else if (hour >= 20 || hour < 6) tipIndex = 5;
-            document.getElementById('weekdayDisplay').textContent = tips[tipIndex];
+        function pickLocalQuote() {
+            return localQuotes[Math.floor(Math.random() * localQuotes.length)];
         }
 
-        updateClock();
-        setInterval(updateClock, 1000);
+        let remoteQuote = null;
+        let typingFinished = false;
+        let quoteShown = null;
 
-        // ============================================================
-        //  2. 点击波纹效果
-        // ============================================================
-        document.querySelectorAll('.grid-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                const rect = this.getBoundingClientRect();
-                const ripple = document.createElement('span');
-                ripple.className = 'ripple';
-                const size = Math.max(rect.width, rect.height);
-                ripple.style.width = ripple.style.height = size + 'px';
-                const x = e.clientX - rect.left - size / 2;
-                const y = e.clientY - rect.top - size / 2;
-                ripple.style.left = x + 'px';
-                ripple.style.top = y + 'px';
-                this.appendChild(ripple);
-                setTimeout(() => ripple.remove(), 700);
-            });
-        });
+        function renderQuote(quote, isReplacement = false) {
+            const applyContent = () => {
+                quoteTextEl.textContent = quote.text;
+                quoteFromEl.textContent = quote.from ? `—— ${quote.from}` : '';
+            };
 
-        // ============================================================
-        //  4. 密码保护功能（学习按钮）
-        // ============================================================
-
-        // ---------- 配置 ----------
-        // ★ 在这里修改密码 ★
-        const STUDY_PASSWORD = 'fhc18977952328';
-
-        // ---------- DOM 引用 ----------
-        const studyBtn = document.getElementById('studyBtn');
-        const overlay = document.getElementById('passwordOverlay');
-        const passwordInput = document.getElementById('passwordInput');
-        const errorMsg = document.getElementById('passwordError');
-        const confirmBtn = document.getElementById('passwordConfirm');
-        const cancelBtn = document.getElementById('passwordCancel');
-
-        let pendingResolve = null; // 用于 resolve 当前验证 Promise
-
-        // ---------- 工具函数 ----------
-        function openDialog() {
-            overlay.classList.add('active');
-            passwordInput.value = '';
-            errorMsg.classList.remove('show');
-            // 聚焦输入框（需要等动画完成）
-            setTimeout(() => passwordInput.focus(), 100);
-            // 返回一个 Promise，在密码验证通过或取消时 resolve
-            return new Promise((resolve) => {
-                pendingResolve = resolve;
-            });
-        }
-
-        function closeDialog() {
-            overlay.classList.remove('active');
-            pendingResolve = null;
-        }
-
-        function verifyPassword(input) {
-            return input === STUDY_PASSWORD;
-        }
-
-        function showError() {
-            errorMsg.classList.add('show');
-            passwordInput.value = '';
-            passwordInput.focus();
-            // 轻微抖动效果
-            passwordInput.style.animation = 'none';
-            setTimeout(() => {
-                passwordInput.style.animation = 'shake 0.3s ease';
-            }, 10);
-        }
-
-        function handleConfirm() {
-            const input = passwordInput.value;
-            if (verifyPassword(input)) {
-                // 密码正确 → 关闭弹窗，跳转
-                closeDialog();
-                // 打开目标链接
-                window.open('http://cntwo.wanwr.com:30168', '_blank');
+            if (isReplacement) {
+                dailyQuoteEl.style.opacity = '0';
+                setTimeout(() => {
+                    applyContent();
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            dailyQuoteEl.style.opacity = '1';
+                        });
+                    });
+                }, 250);
             } else {
-                showError();
+                applyContent();
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        dailyQuoteEl.style.opacity = '1';
+                    });
+                });
             }
         }
 
-        function handleCancel() {
-            closeDialog();
+        function showQuoteAfterTyping() {
+            if (remoteQuote) {
+                renderQuote(remoteQuote, false);
+                quoteShown = 'api';
+            } else {
+                renderQuote(pickLocalQuote(), false);
+                quoteShown = 'local';
+            }
         }
 
-        // ---------- 事件绑定 ----------
+        async function fetchRemoteQuote() {
+            try {
+                const res = await fetch('https://v1.hitokoto.cn/?encode=json');
+                if (!res.ok) throw new Error('API 响应错误');
+                const data = await res.json();
 
-        // 点击学习按钮 → 打开密码弹窗
-        studyBtn.addEventListener('click', function(e) {
-            e.preventDefault(); // 阻止默认跳转
-            openDialog();
+                let from = '';
+                if (data.from_who && data.from) {
+                    from = `${data.from_who}《${data.from}》`;
+                } else if (data.from) {
+                    from = `《${data.from}》`;
+                } else if (data.from_who) {
+                    from = data.from_who;
+                } else {
+                    from = '网络';
+                }
+
+                remoteQuote = { text: data.hitokoto, from: from };
+
+                if (typingFinished && quoteShown === 'local') {
+                    renderQuote(remoteQuote, true);
+                    quoteShown = 'api';
+                }
+            } catch (error) {
+                console.warn('一言 API 请求失败，使用本地语录:', error.message);
+            }
+        }
+
+        fetchRemoteQuote();
+
+        // ==========================================
+        // 2. 打字机效果
+        // ==========================================
+        const titleText = '欢迎来到新新的导航页';
+        const typedTextEl = document.getElementById('typed-text');
+        const cursorEl = document.getElementById('cursor');
+
+        let charIndex = 0;
+
+        function typeTitle() {
+            if (charIndex < titleText.length) {
+                typedTextEl.textContent += titleText.charAt(charIndex);
+                charIndex++;
+                const delay = 90 + Math.random() * 60;
+                setTimeout(typeTitle, delay);
+            } else {
+                typingFinished = true;
+                showQuoteAfterTyping();
+
+                setTimeout(() => {
+                    cursorEl.style.animation = 'none';
+                    void cursorEl.offsetWidth;
+                    cursorEl.style.opacity = '0';
+                }, 600);
+            }
+        }
+
+        setTimeout(typeTitle, 300);
+
+        // ==========================================
+        // 3. 鼠标跟随光晕
+        // ==========================================
+        const root = document.documentElement;
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let currentX = mouseX;
+        let currentY = mouseY;
+        let isMoving = false;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            isMoving = true;
         });
 
-        // 确认按钮
-        confirmBtn.addEventListener('click', handleConfirm);
-
-        // 取消按钮
-        cancelBtn.addEventListener('click', handleCancel);
-
-        // 输入框按回车 → 确认
-        passwordInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                handleConfirm();
+        function animateGlow() {
+            if (isMoving) {
+                currentX += (mouseX - currentX) * 0.1;
+                currentY += (mouseY - currentY) * 0.1;
+                root.style.setProperty('--mouse-x', `${currentX}px`);
+                root.style.setProperty('--mouse-y', `${currentY}px`);
+                if (Math.abs(mouseX - currentX) < 1 && Math.abs(mouseY - currentY) < 1) {
+                    isMoving = false;
+                }
             }
-            if (e.key === 'Escape') {
-                e.preventDefault();
-                handleCancel();
-            }
-        });
+            requestAnimationFrame(animateGlow);
+        }
+        animateGlow();
 
-        // 点击遮罩 → 取消
-        overlay.addEventListener('click', function(e) {
-            if (e.target === overlay) {
-                handleCancel();
-            }
-        });
+        // ==========================================
+        // 4. 粒子背景
+        // ==========================================
+        const canvas = document.getElementById('bg-particles');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
 
-        // ---------- 添加抖动动画（CSS 动态注入） ----------
-        const styleSheet = document.createElement('style');
-        styleSheet.textContent = `
-                    @keyframes shake {
-                        0%, 100% { transform: translateX(0); }
-                        20% { transform: translateX(-8px); }
-                        40% { transform: translateX(8px); }
-                        60% { transform: translateX(-6px); }
-                        80% { transform: translateX(6px); }
+        const config = {
+            particleCount: window.innerWidth < 768 ? 40 : 80,
+            maxDistance: 120,
+            speed: 0.5,
+            radius: 2.5,
+            color: '78, 184, 232'
+        };
+
+        let canvasMouse = { x: -1000, y: -1000, radius: 150 };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * config.speed;
+                this.vy = (Math.random() - 0.5) * config.speed;
+                this.size = Math.random() * config.radius + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+                let dx = canvasMouse.x - this.x;
+                let dy = canvasMouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < canvasMouse.radius) {
+                    let forceDirectionX = dx / distance;
+                    let forceDirectionY = dy / distance;
+                    let force = (canvasMouse.radius - distance) / canvasMouse.radius;
+                    this.x -= forceDirectionX * force * 5;
+                    this.y -= forceDirectionY * force * 5;
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${config.color}, 0.8)`;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < config.particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+        initParticles();
+
+        function drawLines() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    let dx = particles[i].x - particles[j].x;
+                    let dy = particles[i].y - particles[j].y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < config.maxDistance) {
+                        let opacity = 1 - (distance / config.maxDistance);
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(${config.color}, ${opacity * 0.45})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
                     }
-                `;
-        document.head.appendChild(styleSheet);
+                }
+            }
+        }
 
-        // ---------- 控制台提示 ----------
-        console.log('%c🌟 个人引导页 (纯文字按钮 + 学习按钮密码保护)', 'font-size:24px; font-weight:bold; color:#7c5cfc;');
-        console.log('%c点击「学习」按钮需要密码，默认密码: study2026', 'font-size:14px; color:#0acf97;');
-        console.log('%c💡 如需修改密码，请搜索 STUDY_PASSWORD 变量', 'font-size:14px; color:#f7a04f;');
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            drawLines();
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        window.addEventListener('mousemove', (e) => {
+            canvasMouse.x = e.clientX;
+            canvasMouse.y = e.clientY;
+        });
+        window.addEventListener('mouseout', () => {
+            canvasMouse.x = -1000;
+            canvasMouse.y = -1000;
+        });
+
+        // ==========================================
+        // 5. 实时时间
+        // ==========================================
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('zh-CN', { hour12: false });
+            const dateString = now.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit', weekday: 'short' });
+            document.getElementById('clock').textContent = `${dateString} ${timeString}`;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // ==========================================
+        // 6. 真实天气 + 物理位置
+        // ==========================================
+        const weatherEl = document.getElementById('weather');
+
+        const weatherCodeMap = {
+            0: '晴', 1: '大部晴朗', 2: '多云', 3: '阴',
+            45: '雾', 48: '霜雾',
+            51: '小毛毛雨', 53: '毛毛雨', 55: '大毛毛雨',
+            56: '冻毛毛雨', 57: '强冻毛毛雨',
+            61: '小雨', 63: '中雨', 65: '大雨',
+            66: '冻雨', 67: '强冻雨',
+            71: '小雪', 73: '中雪', 75: '大雪',
+            77: '雪粒',
+            80: '小阵雨', 81: '中阵雨', 82: '强阵雨',
+            85: '小阵雪', 86: '大阵雪',
+            95: '雷暴', 96: '雷暴伴小冰雹', 99: '雷暴伴大冰雹'
+        };
+
+        function getWeatherDesc(code) {
+            return weatherCodeMap[code] || '未知';
+        }
+
+        async function fetchLocationName(lat, lon) {
+            try {
+                const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=zh`);
+                const data = await res.json();
+                return data.city || data.locality || data.principalSubdivision || '当前位置';
+            } catch (e) {
+                console.warn('位置获取失败:', e);
+                return '当前位置';
+            }
+        }
+
+        async function fetchWeatherData(lat, lon) {
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`;
+            const res = await fetch(url);
+            const data = await res.json();
+            const current = data.current;
+            return {
+                temp: current.temperature_2m,
+                code: current.weather_code
+            };
+        }
+
+        async function updateWeatherAndLocation(lat, lon) {
+            try {
+                const [locationName, weatherData] = await Promise.all([
+                    fetchLocationName(lat, lon),
+                    fetchWeatherData(lat, lon)
+                ]);
+
+                const desc = getWeatherDesc(weatherData.code);
+                weatherEl.textContent = `${locationName} · ${desc} ${weatherData.temp}℃`;
+            } catch (error) {
+                console.error('天气/位置获取失败:', error);
+                weatherEl.textContent = '获取失败，请检查网络';
+            }
+        }
+
+        function initWeather() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude.toFixed(2);
+                        const lon = position.coords.longitude.toFixed(2);
+                        updateWeatherAndLocation(lat, lon);
+                    },
+                    (error) => {
+                        console.warn('定位失败，使用默认位置(北京):', error.message);
+                        updateWeatherAndLocation(39.90, 116.41);
+                    },
+                    { timeout: 5000 }
+                );
+            } else {
+                updateWeatherAndLocation(39.90, 116.41);
+            }
+        }
+        initWeather();
+
+        // ==========================================
+        // 7. Bing 搜索
+        // ==========================================
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+
+        function doSearch() {
+            const query = searchInput.value.trim();
+            if (!query) {
+                searchInput.focus();
+                return;
+            }
+            window.open(`https://www.bing.com/search?q=${encodeURIComponent(query)}`, '_blank');
+        }
+
+        searchBtn.addEventListener('click', doSearch);
+
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                doSearch();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+            if (e.key === 'Escape' && document.activeElement === searchInput) {
+                searchInput.blur();
+                searchInput.value = '';
+            }
+        });
+
+        // ==========================================
+        // 8. 微信复制
+        // ==========================================
+        const wechatCard = document.getElementById('wechat-copy');
+        const toast = document.getElementById('toast');
+        const wechatId = 'xin439587975';
+        let toastTimer = null;
+
+        function showToast() {
+            toast.classList.add('show');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function fallbackCopyText(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast();
+            } catch (err) {
+                console.error('降级复制失败:', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        wechatCard.addEventListener('click', function() {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(wechatId).then(() => {
+                    showToast();
+                }).catch(err => {
+                    console.error('Clipboard API 复制失败，尝试降级方案', err);
+                    fallbackCopyText(wechatId);
+                });
+            } else {
+                fallbackCopyText(wechatId);
+            }
+        });
     </script>
 
 </body>
