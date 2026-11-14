@@ -15,6 +15,7 @@
        链接可以填完整地址，也可以只填 BV 号。
        ========================================================== */
     const introText = "新新";
+    const contactWechatId = "HikQ439587975";
     const videoLinks = [
       ["课程标题 1", "https://www.bilibili.com/video/BV1xxxxxxxxx"],
       ["课程标题 2", "https://www.bilibili.com/video/BV1xxxxxxxxx"],
@@ -95,6 +96,99 @@
       opacity: 1;
       transform: translateY(0);
       transition-delay: 0.1s;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 0.75rem;
+      padding: 0 0.1rem;
+    }
+
+    .contact {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.42rem;
+      max-width: 100%;
+      min-height: 2.65rem;
+      padding: 0.48rem 0.7rem 0.48rem 0.8rem;
+      color: var(--ink);
+      background: rgba(255, 253, 248, 0.72);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font: inherit;
+      font-size: 0.72rem;
+      line-height: 1;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-appearance: none;
+      appearance: none;
+      transition:
+        color 0.22s ease,
+        background-color 0.22s ease,
+        border-color 0.22s ease,
+        transform 0.22s var(--ease);
+    }
+
+    .contact__label {
+      flex: 0 0 auto;
+      font-weight: 750;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .contact__dot {
+      flex: 0 0 auto;
+      width: 0.2rem;
+      height: 0.2rem;
+      background: var(--pink);
+      border-radius: 50%;
+    }
+
+    .contact__id {
+      min-width: 0;
+      overflow: hidden;
+      color: var(--muted);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .contact__copy {
+      flex: 0 0 auto;
+      width: 0.9rem;
+      height: 0.9rem;
+      margin-left: 0.08rem;
+      color: var(--muted);
+      transition: color 0.22s ease;
+    }
+
+    .contact:hover {
+      background: #fff;
+      border-color: rgba(251, 114, 153, 0.42);
+    }
+
+    .contact:hover .contact__copy {
+      color: var(--pink);
+    }
+
+    .contact:focus-visible {
+      outline: 3px solid rgba(0, 174, 236, 0.5);
+      outline-offset: 3px;
+    }
+
+    .contact:active {
+      transform: scale(0.985);
+    }
+
+    .contact.is-copied {
+      border-color: rgba(0, 174, 236, 0.45);
+    }
+
+    .contact.is-copied .contact__copy {
+      color: var(--blue);
     }
 
     .intro {
@@ -328,6 +422,19 @@
   </div>
 
   <main class="page" id="main-content">
+    <header class="topbar" id="contact-bar">
+      <button class="contact" id="contact-copy" type="button" title="点击复制微信号">
+        <span class="contact__label" id="contact-label">联系我</span>
+        <span class="contact__dot" aria-hidden="true"></span>
+        <span class="contact__id" id="contact-id"></span>
+        <svg class="contact__copy" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="8.5" y="8.5" width="10.5" height="10.5" rx="2.3" stroke="currentColor" stroke-width="1.7"/>
+          <path d="M15.5 8.5v-1A2.5 2.5 0 0 0 13 5H7.5A2.5 2.5 0 0 0 5 7.5V13a2.5 2.5 0 0 0 2.5 2.5h1"
+            stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
     <nav aria-label="视频教程链接">
       <ul class="video-list" id="video-list"></ul>
     </nav>
@@ -367,6 +474,78 @@
         toastTimer = window.setTimeout(function () {
           toast.classList.remove("is-visible");
         }, 2400);
+      }
+
+      async function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          try {
+            await navigator.clipboard.writeText(text);
+            return true;
+          } catch (error) {
+            // Fall through to the textarea method.
+          }
+        }
+
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.top = "0";
+        area.style.left = "-9999px";
+        area.style.fontSize = "16px";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.focus();
+        area.select();
+        area.setSelectionRange(0, area.value.length);
+
+        let successful = false;
+        try {
+          successful = document.execCommand("copy");
+        } catch (error) {
+          successful = false;
+        }
+
+        area.remove();
+        return successful;
+      }
+
+      const contactBar = document.getElementById("contact-bar");
+      const contactButton = document.getElementById("contact-copy");
+      const contactLabel = document.getElementById("contact-label");
+      const contactId = document.getElementById("contact-id");
+      let copyResetTimer;
+
+      if (contactBar && contactButton && contactLabel && contactId) {
+        const wechatId = String(contactWechatId || "").trim();
+
+        if (!wechatId) {
+          contactBar.hidden = true;
+        } else {
+          contactId.textContent = wechatId;
+          contactButton.setAttribute("aria-label", "复制微信号 " + wechatId);
+
+          contactButton.addEventListener("click", async function () {
+            const copied = await copyText(wechatId);
+
+            if (!copied) {
+              showToast("复制失败，请手动复制：" + wechatId);
+              return;
+            }
+
+            contactButton.classList.add("is-copied");
+            contactLabel.textContent = "已复制";
+            contactButton.setAttribute("aria-label", "微信号已复制 " + wechatId);
+            showToast("微信号已复制：" + wechatId);
+
+            window.clearTimeout(copyResetTimer);
+            copyResetTimer = window.setTimeout(function () {
+              contactButton.classList.remove("is-copied");
+              contactLabel.textContent = "联系我";
+              contactButton.setAttribute("aria-label", "复制微信号 " + wechatId);
+            }, 1800);
+          });
+        }
       }
 
       videoLinks.forEach(function (item) {
