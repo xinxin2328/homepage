@@ -1,969 +1,754 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新新导航 - 现代化首页</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f2eb">
+  <meta name="color-scheme" content="light">
+  <meta name="format-detection" content="telephone=no">
+  <title>视频教程</title>
+
+  <script>
+    /* ==========================================================
+       只改这里：一行一个视频
+       格式：[ "显示的课程文字", "B 站视频链接" ]
+       链接可以填完整地址，也可以只填 BV 号。
+       ========================================================== */
+    const introText = "新新";
+    const videoLinks = [
+      ["课程标题 1", "https://www.bilibili.com/video/BV1xxxxxxxxx"],
+      ["课程标题 2", "https://www.bilibili.com/video/BV1xxxxxxxxx"],
+      ["课程标题 3", "https://www.bilibili.com/video/BV1xxxxxxxxx"],
+      ["课程标题 4", "https://www.bilibili.com/video/BV1xxxxxxxxx"],
+      ["课程标题 5", "https://www.bilibili.com/video/BV1xxxxxxxxx"],
+      ["课程标题 6", "https://www.bilibili.com/video/BV1xxxxxxxxx"]
+    ];
+  </script>
+
+  <style>
+    :root {
+      --paper: #f5f2eb;
+      --card: #fffdf8;
+      --ink: #1a1c1e;
+      --muted: #74716b;
+      --line: rgba(26, 28, 30, 0.10);
+      --pink: #fb7299;
+      --radius: 15px;
+      --ease: cubic-bezier(0.22, 0.8, 0.25, 1);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      min-height: 100svh;
+      margin: 0;
+      overflow-x: hidden;
+      padding:
+        calc(env(safe-area-inset-top) + 1.15rem)
+        max(1rem, env(safe-area-inset-right))
+        calc(env(safe-area-inset-bottom) + 1.5rem)
+        max(1rem, env(safe-area-inset-left));
+      color: var(--ink);
+      background:
+        radial-gradient(32rem 22rem at 100% 0%, rgba(251, 114, 153, 0.09), transparent 70%),
+        radial-gradient(28rem 20rem at 0% 100%, rgba(0, 174, 236, 0.06), transparent 70%),
+        var(--paper);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::selection {
+      background: rgba(251, 114, 153, 0.25);
+    }
+
+    body.is-intro {
+      overflow: hidden;
+    }
+
+    .page {
+      width: min(100%, 42rem);
+      margin: 0 auto;
+      opacity: 1;
+      transform: translateY(0);
+      transition:
+        opacity 0.62s var(--ease),
+        transform 0.62s var(--ease);
+    }
+
+    body.is-intro .page {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+
+    body.is-entered .page {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.1s;
+    }
+
+    .intro {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      overflow: hidden;
+      background:
+        radial-gradient(40rem 28rem at 12% 8%, rgba(251, 114, 153, 0.12), transparent 66%),
+        radial-gradient(36rem 26rem at 90% 92%, rgba(0, 174, 236, 0.10), transparent 68%),
+        #101214;
+      opacity: 1;
+      transition: opacity 0.55s var(--ease) 0.16s;
+    }
+
+    .intro.is-leaving {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .intro.is-skipping {
+      transition-duration: 0.22s;
+    }
+
+    .intro__glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: min(82vw, 52rem);
+      aspect-ratio: 2 / 1;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(251, 114, 153, 0.20) 0%,
+        rgba(0, 174, 236, 0.07) 44%,
+        transparent 72%
+      );
+      filter: blur(22px);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.65s ease;
+    }
+
+    .intro.is-formed .intro__glow {
+      opacity: 1;
+    }
+
+    .intro__canvas {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .video-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .video-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      width: 100%;
+      min-height: 4.35rem;
+      padding: 1rem 1.05rem;
+      color: var(--ink);
+      text-align: left;
+      text-decoration: none;
+      font: inherit;
+      background: rgba(255, 253, 248, 0.9);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 14px 28px -30px rgba(26, 28, 30, 0.55);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-appearance: none;
+      appearance: none;
+      transition:
+        transform 0.22s var(--ease),
+        border-color 0.22s ease,
+        background-color 0.22s ease,
+        box-shadow 0.22s ease;
+    }
+
+    .video-link__text {
+      min-width: 0;
+      font-size: 0.98rem;
+      font-weight: 650;
+      line-height: 1.5;
+      letter-spacing: -0.005em;
+      overflow-wrap: anywhere;
+    }
+
+    .video-link__arrow {
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      width: 2rem;
+      height: 2rem;
+      color: var(--muted);
+      background: #f6f2ea;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      transition:
+        color 0.22s ease,
+        background-color 0.22s ease,
+        border-color 0.22s ease,
+        transform 0.22s var(--ease);
+    }
+
+    .video-link__arrow svg {
+      width: 0.85rem;
+      height: 0.85rem;
+    }
+
+    .video-link:focus-visible {
+      outline: 3px solid rgba(0, 174, 236, 0.5);
+      outline-offset: 3px;
+    }
+
+    .video-link:active {
+      transform: scale(0.994);
+      background: #fff;
+    }
+
+    .toast {
+      position: fixed;
+      z-index: 10;
+      left: 50%;
+      bottom: calc(env(safe-area-inset-bottom) + 1.1rem);
+      width: max-content;
+      max-width: calc(100vw - 2rem);
+      padding: 0.68rem 1rem;
+      color: #fff;
+      background: rgba(26, 28, 30, 0.94);
+      border-radius: 999px;
+      box-shadow: 0 12px 34px -16px rgba(26, 28, 30, 0.65);
+      font-size: 0.78rem;
+      line-height: 1.5;
+      text-align: center;
+      pointer-events: none;
+      opacity: 0;
+      transform: translate(-50%, 0.6rem);
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s var(--ease);
+    }
+
+    .toast.is-visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .video-link:hover {
+        transform: translateY(-1px);
+        background: #fff;
+        border-color: rgba(251, 114, 153, 0.42);
+        box-shadow: 0 20px 34px -30px rgba(26, 28, 30, 0.55);
+      }
+
+      .video-link:hover .video-link__arrow {
+        color: #fff;
+        background: var(--pink);
+        border-color: var(--pink);
+        transform: translate(1px, -1px);
+      }
+    }
+
+    @media (min-width: 540px) {
+      body {
+        padding-top: calc(env(safe-area-inset-top) + 2rem);
+        padding-bottom: calc(env(safe-area-inset-bottom) + 2rem);
+      }
+
+      .video-list {
+        gap: 0.7rem;
+      }
+
+      .video-link {
+        min-height: 4.75rem;
+        padding: 1.1rem 1.2rem;
+        border-radius: 16px;
+      }
+
+      .video-link__text {
+        font-size: 1.03rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .video-link,
+      .video-link__arrow,
+      .toast,
+      .page {
+        transition: none;
+      }
+
+      .intro {
+        display: none;
+      }
+
+      body.is-intro {
+        overflow: auto;
+      }
+
+      body.is-intro .page,
+      body.is-entered .page {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+  <noscript>
     <style>
-        :root {
-            --primary-color: #1e7ba1;
-            --primary-light: #4db8e8;
-            --text-main: #e2e8f0;
-            --text-sub: #a0aec0;
-            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
-            --shadow-hover: 0 20px 25px -5px rgba(78, 184, 232, 0.3), 0 10px 10px -5px rgba(78, 184, 232, 0.15);
-            --mouse-x: 50vw;
-            --mouse-y: 50vh;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        }
-
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 30px 20px;
-            background-color: #0a1929;
-            color: var(--text-main);
-            overflow: hidden;
-        }
-
-        #bg-particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -2;
-            pointer-events: none;
-        }
-
-        .interactive-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .interactive-bg::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(
-                600px circle at var(--mouse-x) var(--mouse-y),
-                rgba(78, 184, 232, 0.15),
-                transparent 80%
-            );
-        }
-
-        .app-container {
-            width: 100%;
-            max-width: 1000px;
-            background: rgba(20, 33, 51, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
-            position: relative;
-            z-index: 1;
-            border: 1px solid rgba(74, 100, 130, 0.3);
-        }
-
-        .top-section {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 24px;
-        }
-
-        .left-column, .right-column {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .welcome-card {
-            background: linear-gradient(135deg, rgba(30, 45, 66, 0.8) 0%, rgba(22, 35, 54, 0.8) 100%);
-            border-radius: 16px;
-            padding: 32px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid rgba(74, 100, 130, 0.3);
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .welcome-card h1 {
-            font-size: 24px;
-            font-weight: 700;
-            background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 16px;
-            min-height: 32px;
-            line-height: 1.35;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        #typed-text {
-            display: inline;
-        }
-
-        #cursor {
-            display: inline-block;
-            width: 2px;
-            height: 22px;
-            background: linear-gradient(180deg, var(--primary-color), var(--primary-light));
-            margin-left: 4px;
-            border-radius: 2px;
-            vertical-align: middle;
-            transform: translateY(-1px);
-            animation: blink 1s step-end infinite;
-            transition: opacity 2s ease-out;
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            50.01%, 100% { opacity: 0; }
-        }
-
-        .daily-quote {
-            font-size: 15px;
-            color: var(--text-sub);
-            line-height: 1.7;
-            position: relative;
-            padding-left: 18px;
-            min-height: 56px;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .daily-quote::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 4px;
-            bottom: 4px;
-            width: 3px;
-            background: linear-gradient(180deg, var(--primary-light), rgba(78, 184, 232, 0.2));
-            border-radius: 3px;
-        }
-
-        .daily-quote .quote-text {
-            display: block;
-            font-style: italic;
-            color: var(--text-main);
-            font-weight: 500;
-        }
-
-        .daily-quote .quote-from {
-            display: block;
-            margin-top: 6px;
-            font-size: 13px;
-            color: var(--text-sub);
-            text-align: right;
-            opacity: 0.85;
-        }
-
-        .info-card {
-            background: rgba(30, 45, 66, 0.7);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid rgba(74, 100, 130, 0.4);
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 24px;
-        }
-
-        .info-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .info-icon {
-            font-size: 24px;
-            background: rgba(45, 65, 90, 0.8);
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-        }
-
-        .info-text h3 {
-            font-size: 13px;
-            color: var(--text-sub);
-            font-weight: 500;
-            margin-bottom: 4px;
-        }
-
-        .info-text p {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        .search-section {
-            display: flex;
-            justify-content: center;
-        }
-
-        .search-box {
-            width: 100%;
-            max-width: 720px;
-            display: flex;
-            align-items: center;
-            background: rgba(30, 45, 66, 0.7);
-            border: 1.5px solid rgba(74, 100, 130, 0.4);
-            border-radius: 50px;
-            padding: 6px 6px 6px 22px;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            gap: 12px;
-        }
-
-        .search-box:focus-within {
-            border-color: var(--primary-light);
-            box-shadow: 0 0 0 4px rgba(78, 184, 232, 0.15), var(--shadow-md);
-            transform: translateY(-2px);
-        }
-
-        .search-logo {
-            width: 22px;
-            height: 22px;
-            flex-shrink: 0;
-            transition: transform 0.3s ease;
-        }
-
-        .search-box:focus-within .search-logo {
-            transform: scale(1.1) rotate(-8deg);
-        }
-
-        #search-input {
-            flex: 1;
-            border: none;
-            outline: none;
-            background: transparent;
-            font-size: 15px;
-            color: var(--text-main);
-            padding: 10px 0;
-            font-family: inherit;
-            letter-spacing: 0.3px;
-        }
-
-        #search-input::placeholder {
-            color: #718096;
-            transition: color 0.3s ease;
-        }
-
-        .search-box:focus-within #search-input::placeholder {
-            color: #4a5568;
-        }
-
-        .search-btn {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-            color: #ffffff;
-            border: none;
-            border-radius: 50px;
-            padding: 11px 26px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 1.5px;
-            font-family: inherit;
-            box-shadow: 0 4px 12px rgba(78, 184, 232, 0.25);
-        }
-
-        .search-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(78, 184, 232, 0.4);
-        }
-
-        .search-btn:active {
-            transform: scale(0.98);
-        }
-
-        .middle-section {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-        }
-
-        .nav-button {
-            aspect-ratio: 1 / 1;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            color: #ffffff;
-            font-weight: 600;
-            font-size: 20px;
-            letter-spacing: 2px;
-            box-shadow: var(--shadow-md);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            border: none;
-        }
-
-        .nav-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
-            transition: all 0.5s ease;
-        }
-
-        .nav-button:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .nav-button:hover::before {
-            left: 100%;
-        }
-
-        .bottom-section {
-            display: flex;
-            justify-content: center;
-            margin-top: 8px;
-        }
-
-        .wechat-card {
-            background: rgba(30, 45, 66, 0.7);
-            border: 1px solid rgba(74, 100, 130, 0.4);
-            padding: 12px 32px;
-            border-radius: 50px;
-            box-shadow: var(--shadow-sm);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--text-sub);
-            font-size: 15px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .wechat-card:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
-            border-color: var(--primary-light);
-        }
-
-        .wechat-card:active {
-            transform: translateY(1px) scale(0.98);
-        }
-
-        .wechat-icon {
-            color: #07C160;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .wechat-card b {
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        #toast {
-            position: fixed;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: rgba(78, 184, 232, 0.95);
-            color: #0a1929;
-            padding: 14px 28px;
-            border-radius: 50px;
-            font-size: 15px;
-            font-weight: 600;
-            box-shadow: 0 10px 25px -5px rgba(78, 184, 232, 0.4);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        #toast.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        @media (max-width: 768px) {
-            .app-container {
-                padding: 24px;
-                gap: 26px;
-            }
-            .top-section {
-                grid-template-columns: 1fr;
-            }
-            .middle-section {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 16px;
-            }
-            .nav-button {
-                font-size: 18px;
-                border-radius: 16px;
-            }
-            .search-box {
-                padding: 5px 5px 5px 18px;
-                gap: 8px;
-            }
-            .search-btn {
-                padding: 10px 20px;
-                font-size: 13px;
-                letter-spacing: 1px;
-            }
-            #search-input {
-                font-size: 14px;
-            }
-            .daily-quote {
-                font-size: 14px;
-                min-height: 52px;
-            }
-            .welcome-card h1 {
-                font-size: 20px;
-                min-height: 28px;
-            }
-            #cursor {
-                height: 18px;
-            }
-        }
+      .intro { display: none !important; }
     </style>
+  </noscript>
 </head>
 <body>
+  <div class="intro" id="intro" aria-hidden="true">
+    <div class="intro__glow"></div>
+    <canvas class="intro__canvas" id="intro-canvas"></canvas>
+  </div>
 
-    <canvas id="bg-particles"></canvas>
-    <div class="interactive-bg"></div>
+  <main class="page" id="main-content">
+    <nav aria-label="视频教程链接">
+      <ul class="video-list" id="video-list"></ul>
+    </nav>
+  </main>
 
-    <div class="app-container">
-        <div class="top-section">
-            <div class="left-column">
-                <div class="welcome-card">
-                    <h1>
-                        <span id="typed-text"></span><span id="cursor"></span>
-                    </h1>
-                    <div class="daily-quote" id="daily-quote">
-                        <span class="quote-text"></span>
-                        <span class="quote-from"></span>
-                    </div>
-                </div>
-            </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-            <div class="right-column">
-                <div class="info-card">
-                    <div class="info-item">
-                        <div class="info-icon">🕒</div>
-                        <div class="info-text">
-                            <h3>时间</h3>
-                            <p id="clock">加载中...</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-icon">⛅</div>
-                        <div class="info-text">
-                            <h3>天气</h3>
-                            <p id="weather">正在获取位置和天气...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <script>
+    (function () {
+      const list = document.getElementById("video-list");
+      const toast = document.getElementById("toast");
+      let toastTimer;
 
-        <div class="search-section">
-            <div class="search-box">
-                <svg class="search-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4 2V18.5L9.5 22L20 17.5V10.5L13 8V4.5L4 2Z" fill="#008373"/>
-                    <path d="M4 2V18.5L9.5 22L20 17.5L13 14V8L4 2Z" fill="#00B7C3" opacity="0.85"/>
-                </svg>
-                <input type="text" id="search-input" placeholder="使用 Bing 搜索..." autocomplete="off" spellcheck="false">
-                <button class="search-btn" id="search-btn">搜索</button>
-            </div>
-        </div>
+      const arrowIcon = `
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="1.9"
+            stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
 
-        <div class="middle-section">
-            <a href="http://cntwo.wanwr.com:30167/" target="_blank" class="nav-button">导航一</a>
-            <a href="http://cntwo.wanwr.com:30168/" target="_blank" class="nav-button">导航二</a>
-            <!-- 导航三：已改为新链接 -->
-            <a href="http://cntwo.wanwr.com:30169/" target="_blank" class="nav-button">导航三</a>
-            <a href="http://123.com" target="_blank" class="nav-button">导航四</a>
-        </div>
+      function normalizeUrl(value) {
+        const raw = String(value || "").trim();
+        if (!raw) return "";
+        if (/^BV[0-9A-Za-z]+$/.test(raw)) {
+          return "https://www.bilibili.com/video/" + raw;
+        }
+        if (/^https?:\/\//i.test(raw)) {
+          return raw;
+        }
+        return "";
+      }
 
-        <div class="bottom-section">
-            <div class="wechat-card" id="wechat-copy" title="点击复制微信号">
-                <span class="wechat-icon">💬</span>
-                微信：<b>xin439587975</b>
-            </div>
-        </div>
-    </div>
+      function showToast(message) {
+        window.clearTimeout(toastTimer);
+        toast.textContent = message;
+        toast.classList.add("is-visible");
+        toastTimer = window.setTimeout(function () {
+          toast.classList.remove("is-visible");
+        }, 2400);
+      }
 
-    <div id="toast">✅ 已复制微信号，请前往微信添加</div>
+      videoLinks.forEach(function (item) {
+        const text = String(item[0] || "").trim();
+        const href = normalizeUrl(item[1]);
+        const row = document.createElement(href ? "a" : "button");
+        const li = document.createElement("li");
 
-    <script>
-        // ==========================================
-        // 1. 一言 + 打字机联动
-        // ==========================================
-        const dailyQuoteEl = document.getElementById('daily-quote');
-        const quoteTextEl = dailyQuoteEl.querySelector('.quote-text');
-        const quoteFromEl = dailyQuoteEl.querySelector('.quote-from');
+        row.className = "video-link";
+        row.setAttribute("aria-label", text + (href ? "，在新标签页打开" : "，链接未填写"));
 
-        const localQuotes = [
-            { text: '生活明朗，万物可爱。', from: '网络' },
-            { text: '路虽远行则将至，事虽难做则必成。', from: '《荀子·修身》' },
-            { text: '星光不问赶路人，时光不负有心人。', from: '网络' },
-            { text: '愿你出走半生，归来仍是少年。', from: '网络' },
-            { text: '山重水复疑无路，柳暗花明又一村。', from: '陆游《游山西村》' }
-        ];
-
-        function pickLocalQuote() {
-            return localQuotes[Math.floor(Math.random() * localQuotes.length)];
+        if (href) {
+          row.href = href;
+          row.target = "_blank";
+          row.rel = "noopener noreferrer";
+        } else {
+          row.type = "button";
+          row.addEventListener("click", function () {
+            showToast("这行还没有填写视频链接");
+          });
         }
 
-        let remoteQuote = null;
-        let typingFinished = false;
-        let quoteShown = null;
+        const label = document.createElement("span");
+        label.className = "video-link__text";
+        label.textContent = text;
 
-        function renderQuote(quote, isReplacement = false) {
-            const applyContent = () => {
-                quoteTextEl.textContent = quote.text;
-                quoteFromEl.textContent = quote.from ? `—— ${quote.from}` : '';
-            };
+        const arrow = document.createElement("span");
+        arrow.className = "video-link__arrow";
+        arrow.setAttribute("aria-hidden", "true");
+        arrow.innerHTML = arrowIcon;
 
-            if (isReplacement) {
-                dailyQuoteEl.style.opacity = '0';
-                setTimeout(() => {
-                    applyContent();
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            dailyQuoteEl.style.opacity = '1';
-                        });
-                    });
-                }, 250);
-            } else {
-                applyContent();
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        dailyQuoteEl.style.opacity = '1';
-                    });
-                });
-            }
+        row.appendChild(label);
+        row.appendChild(arrow);
+        li.appendChild(row);
+        list.appendChild(li);
+      });
+    })();
+  </script>
+
+  <script>
+    (function () {
+      const intro = document.getElementById("intro");
+      const canvas = document.getElementById("intro-canvas");
+      const main = document.getElementById("main-content");
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let ctx = null;
+
+      try {
+        ctx = canvas ? canvas.getContext("2d") : null;
+      } catch (error) {
+        ctx = null;
+      }
+
+      function enterImmediately() {
+        if (intro) intro.remove();
+        document.body.classList.remove("is-intro");
+        document.body.classList.add("is-entered");
+        if (main) main.removeAttribute("inert");
+      }
+
+      if (!intro || !canvas || !ctx || reduceMotion) {
+        enterImmediately();
+        return;
+      }
+
+      const TAU = Math.PI * 2;
+      const DPR = Math.min(window.devicePixelRatio || 1, 2);
+      const GATHER_AT = 620;
+      const FORMED_AT = 1620;
+      const SCATTER_AT = 2160;
+      const REVEAL_AT = 2220;
+      const END_AT = 3060;
+
+      let width = 0;
+      let height = 0;
+      let particles = [];
+      let startTime = 0;
+      let rafId = 0;
+      let formedTimer = 0;
+      let revealTimer = 0;
+      let endTimer = 0;
+      let finished = false;
+
+      function random(min, max) {
+        return min + Math.random() * (max - min);
+      }
+
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function easeOutCubic(value) {
+        return 1 - Math.pow(1 - value, 3);
+      }
+
+      function easeOutQuad(value) {
+        return 1 - Math.pow(1 - value, 2);
+      }
+
+      function buildTextTargets(count) {
+        const sampleCanvas = document.createElement("canvas");
+        sampleCanvas.width = Math.max(1, Math.round(width));
+        sampleCanvas.height = Math.max(1, Math.round(height));
+
+        const sampleCtx = sampleCanvas.getContext("2d", { willReadFrequently: true });
+        if (!sampleCtx) return [];
+
+        let fontSize = Math.min(width * 0.34, height * 0.36, 280);
+        const fontFamily = '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif';
+        let gap = fontSize * 0.075;
+        const chars = Array.from(String(introText || "新新"));
+
+        sampleCtx.fillStyle = "#ffffff";
+        sampleCtx.textAlign = "left";
+        sampleCtx.textBaseline = "middle";
+
+        function updateTextMetrics() {
+          sampleCtx.font = "900 " + fontSize + "px " + fontFamily;
+          const measuredWidths = chars.map(function (char) {
+            return sampleCtx.measureText(char).width;
+          });
+          const measuredTotal = measuredWidths.reduce(function (total, charWidth) {
+            return total + charWidth;
+          }, 0) + gap * Math.max(0, chars.length - 1);
+
+          return { widths: measuredWidths, totalWidth: measuredTotal };
         }
 
-        function showQuoteAfterTyping() {
-            if (remoteQuote) {
-                renderQuote(remoteQuote, false);
-                quoteShown = 'api';
-            } else {
-                renderQuote(pickLocalQuote(), false);
-                quoteShown = 'local';
-            }
+        let metrics = updateTextMetrics();
+
+        if (metrics.totalWidth > width * 0.78) {
+          fontSize *= (width * 0.78) / metrics.totalWidth;
+          gap = fontSize * 0.075;
+          metrics = updateTextMetrics();
         }
 
-        async function fetchRemoteQuote() {
-            try {
-                const res = await fetch('https://v1.hitokoto.cn/?encode=json');
-                if (!res.ok) throw new Error('API 响应错误');
-                const data = await res.json();
+        const widths = metrics.widths;
+        const totalWidth = metrics.totalWidth;
+        let x = (width - totalWidth) / 2;
 
-                let from = '';
-                if (data.from_who && data.from) {
-                    from = `${data.from_who}《${data.from}》`;
-                } else if (data.from) {
-                    from = `《${data.from}》`;
-                } else if (data.from_who) {
-                    from = data.from_who;
-                } else {
-                    from = '网络';
-                }
-
-                remoteQuote = { text: data.hitokoto, from: from };
-
-                if (typingFinished && quoteShown === 'local') {
-                    renderQuote(remoteQuote, true);
-                    quoteShown = 'api';
-                }
-            } catch (error) {
-                console.warn('一言 API 请求失败，使用本地语录:', error.message);
-            }
-        }
-
-        fetchRemoteQuote();
-
-        // ==========================================
-        // 2. 打字机效果
-        // ==========================================
-        const titleText = '欢迎来到新新的导航页';
-        const typedTextEl = document.getElementById('typed-text');
-        const cursorEl = document.getElementById('cursor');
-
-        let charIndex = 0;
-
-        function typeTitle() {
-            if (charIndex < titleText.length) {
-                typedTextEl.textContent += titleText.charAt(charIndex);
-                charIndex++;
-                const delay = 90 + Math.random() * 60;
-                setTimeout(typeTitle, delay);
-            } else {
-                typingFinished = true;
-                showQuoteAfterTyping();
-
-                setTimeout(() => {
-                    cursorEl.style.animation = 'none';
-                    void cursorEl.offsetWidth;
-                    cursorEl.style.opacity = '0';
-                }, 600);
-            }
-        }
-
-        setTimeout(typeTitle, 300);
-
-        // ==========================================
-        // 3. 鼠标跟随光晕
-        // ==========================================
-        const root = document.documentElement;
-        let mouseX = window.innerWidth / 2;
-        let mouseY = window.innerHeight / 2;
-        let currentX = mouseX;
-        let currentY = mouseY;
-        let isMoving = false;
-
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            isMoving = true;
+        chars.forEach(function (char, index) {
+          sampleCtx.fillText(char, x, height / 2);
+          x += widths[index] + gap;
         });
 
-        function animateGlow() {
-            if (isMoving) {
-                currentX += (mouseX - currentX) * 0.1;
-                currentY += (mouseY - currentY) * 0.1;
-                root.style.setProperty('--mouse-x', `${currentX}px`);
-                root.style.setProperty('--mouse-y', `${currentY}px`);
-                if (Math.abs(mouseX - currentX) < 1 && Math.abs(mouseY - currentY) < 1) {
-                    isMoving = false;
-                }
+        const pixels = sampleCtx.getImageData(0, 0, sampleCanvas.width, sampleCanvas.height).data;
+        const step = width < 620 ? 3 : 4;
+        const points = [];
+
+        for (let sampleY = 0; sampleY < height; sampleY += step) {
+          for (let sampleX = 0; sampleX < width; sampleX += step) {
+            const alpha = pixels[(sampleY * sampleCanvas.width + sampleX) * 4 + 3];
+            if (alpha > 150) {
+              points.push([sampleX, sampleY]);
             }
-            requestAnimationFrame(animateGlow);
-        }
-        animateGlow();
-
-        // ==========================================
-        // 4. 粒子背景
-        // ==========================================
-        const canvas = document.getElementById('bg-particles');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-
-        const config = {
-            particleCount: window.innerWidth < 768 ? 40 : 80,
-            maxDistance: 120,
-            speed: 0.5,
-            radius: 2.5,
-            color: '78, 184, 232'
-        };
-
-        let canvasMouse = { x: -1000, y: -1000, radius: 150 };
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * config.speed;
-                this.vy = (Math.random() - 0.5) * config.speed;
-                this.size = Math.random() * config.radius + 1;
-            }
-
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-
-                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-
-                let dx = canvasMouse.x - this.x;
-                let dy = canvasMouse.y - this.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < canvasMouse.radius) {
-                    let forceDirectionX = dx / distance;
-                    let forceDirectionY = dy / distance;
-                    let force = (canvasMouse.radius - distance) / canvasMouse.radius;
-                    this.x -= forceDirectionX * force * 5;
-                    this.y -= forceDirectionY * force * 5;
-                }
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(${config.color}, 0.8)`;
-                ctx.fill();
-            }
+          }
         }
 
-        function initParticles() {
-            particles = [];
-            for (let i = 0; i < config.particleCount; i++) {
-                particles.push(new Particle());
+        for (let i = points.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const temp = points[i];
+          points[i] = points[j];
+          points[j] = temp;
+        }
+
+        if (!points.length) {
+          return [];
+        }
+
+        const targets = [];
+        for (let i = 0; i < count; i++) {
+          const point = points[i % points.length];
+          targets.push({
+            x: clamp(point[0] + random(-1.1, 1.1), 0, width),
+            y: clamp(point[1] + random(-1.1, 1.1), 0, height)
+          });
+        }
+
+        return targets;
+      }
+
+      function buildParticles() {
+        const density = width < 620 ? 300 : 800;
+        let desiredCount = Math.round((width * height) / density);
+        desiredCount = clamp(desiredCount, width < 620 ? 760 : 1100, width < 620 ? 1400 : 2000);
+
+        const aspect = width / height;
+        const columns = Math.max(1, Math.round(Math.sqrt(desiredCount * aspect)));
+        const rows = Math.max(1, Math.ceil(desiredCount / columns));
+        const count = columns * rows;
+        const cellWidth = width / columns;
+        const cellHeight = height / rows;
+        const targets = buildTextTargets(count);
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const scale = clamp(Math.sqrt((width * height) / (390 * 844)), 0.88, 1.25);
+
+        if (!targets.length) {
+          enterImmediately();
+          finished = true;
+          return;
+        }
+
+        particles = [];
+
+        for (let i = 0; i < count; i++) {
+          const column = i % columns;
+          const row = Math.floor(i / columns);
+          const originX = clamp((column + 0.5) * cellWidth + random(-0.4, 0.4) * cellWidth, 0, width);
+          const originY = clamp((row + 0.5) * cellHeight + random(-0.4, 0.4) * cellHeight, 0, height);
+          const target = targets[i];
+          const roll = Math.random();
+          const color = roll < 0.8 ? "#f8f5ee" : roll < 0.92 ? "#fb7299" : "#6ed7fa";
+          const angle = Math.atan2(target.y - centerY, target.x - centerX) + random(-0.48, 0.48);
+          const distance = Math.max(width, height) * random(0.24, 0.7);
+
+          particles.push({
+            originX: originX,
+            originY: originY,
+            targetX: target.x,
+            targetY: target.y,
+            x: originX,
+            y: originY,
+            color: color,
+            alpha: random(0.38, 0.96),
+            size: random(0.82, 1.75) * scale,
+            phase: random(0, TAU),
+            drift: random(3, 9),
+            revealDelay: random(0, 160),
+            revealDuration: random(260, 360),
+            gatherDelay: random(0, 200),
+            gatherDuration: random(760, 980),
+            scatterX: Math.cos(angle) * distance + random(-45, 45),
+            scatterY: Math.sin(angle) * distance + random(-45, 45),
+            scatterDelay: random(0, 120),
+            scatterDuration: random(650, 900),
+            arc: random(-42, 42),
+            glow: Math.random() < 0.22
+          });
+        }
+      }
+
+      function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = Math.max(1, Math.round(width * DPR));
+        canvas.height = Math.max(1, Math.round(height * DPR));
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      }
+
+      function finishIntro() {
+        if (finished) return;
+        finished = true;
+
+        window.clearTimeout(formedTimer);
+        window.clearTimeout(revealTimer);
+        window.clearTimeout(endTimer);
+        window.cancelAnimationFrame(rafId);
+
+        window.removeEventListener("pointerdown", onSkip);
+        window.removeEventListener("keydown", onKeydown);
+
+        document.body.classList.add("is-entered");
+        document.body.classList.remove("is-intro");
+        if (main) main.removeAttribute("inert");
+
+        if (intro) intro.remove();
+      }
+
+      function revealPage() {
+        if (finished) return;
+        intro.classList.add("is-formed", "is-leaving");
+        document.body.classList.add("is-entered");
+      }
+
+      function onSkip() {
+        finishIntro();
+      }
+
+      function onKeydown(event) {
+        if (event.key === "Escape") {
+          finishIntro();
+        }
+      }
+
+      function drawFrame(now) {
+        if (finished) return;
+
+        const elapsed = now - startTime;
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < particles.length; i++) {
+          const particle = particles[i];
+          const reveal = clamp((elapsed - particle.revealDelay) / particle.revealDuration, 0, 1);
+          let alpha = particle.alpha * reveal;
+          let x;
+          let y;
+          let size = particle.size;
+
+          if (elapsed < GATHER_AT) {
+            const driftTime = elapsed * 0.0013;
+            x = particle.originX + Math.sin(driftTime + particle.phase) * particle.drift;
+            y = particle.originY + Math.cos(driftTime * 0.9 + particle.phase * 1.3) * particle.drift * 0.7;
+            alpha *= 0.8 + 0.2 * Math.sin(elapsed * 0.004 + particle.phase);
+          } else if (elapsed < SCATTER_AT) {
+            const progress = clamp(
+              (elapsed - GATHER_AT - particle.gatherDelay) / particle.gatherDuration,
+              0,
+              1
+            );
+            const eased = easeOutCubic(progress);
+            const driftTime = elapsed * 0.0013;
+            const driftX = Math.sin(driftTime + particle.phase) * particle.drift;
+            const driftY = Math.cos(driftTime * 0.9 + particle.phase * 1.3) * particle.drift * 0.7;
+            const arc = Math.sin(Math.PI * eased);
+
+            x = particle.originX + driftX * (1 - eased) + (particle.targetX - particle.originX) * eased;
+            y = particle.originY + driftY * (1 - eased) + (particle.targetY - particle.originY) * eased;
+            x += Math.cos(particle.phase) * particle.arc * arc;
+            y += Math.sin(particle.phase) * particle.arc * arc;
+
+            if (progress >= 1) {
+              x = particle.targetX + Math.sin(elapsed * 0.0022 + particle.phase) * 0.55;
+              y = particle.targetY + Math.cos(elapsed * 0.0019 + particle.phase) * 0.55;
             }
-        }
-        initParticles();
+          } else {
+            const progress = clamp(
+              (elapsed - SCATTER_AT - particle.scatterDelay) / particle.scatterDuration,
+              0,
+              1
+            );
+            const eased = easeOutQuad(progress);
+            x = particle.targetX + particle.scatterX * eased;
+            y = particle.targetY + particle.scatterY * eased;
+            alpha *= 1 - eased;
+            size *= 1 - eased * 0.4;
+          }
 
-        function drawLines() {
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    let dx = particles[i].x - particles[j].x;
-                    let dy = particles[i].y - particles[j].y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
+          if (alpha <= 0.01 || size <= 0) continue;
 
-                    if (distance < config.maxDistance) {
-                        let opacity = 1 - (distance / config.maxDistance);
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(${config.color}, ${opacity * 0.45})`;
-                        ctx.lineWidth = 1;
-                        ctx.stroke();
-                    }
-                }
-            }
-        }
+          particle.x = x;
+          particle.y = y;
 
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(particle => {
-                particle.update();
-                particle.draw();
-            });
-            drawLines();
-            requestAnimationFrame(animateParticles);
-        }
-        animateParticles();
+          if (particle.glow) {
+            ctx.globalAlpha = alpha * 0.09;
+            ctx.fillStyle = particle.color;
+            ctx.beginPath();
+            ctx.arc(x, y, size * 4.2, 0, TAU);
+            ctx.fill();
+          }
 
-        window.addEventListener('mousemove', (e) => {
-            canvasMouse.x = e.clientX;
-            canvasMouse.y = e.clientY;
-        });
-        window.addEventListener('mouseout', () => {
-            canvasMouse.x = -1000;
-            canvasMouse.y = -1000;
-        });
-
-        // ==========================================
-        // 5. 实时时间
-        // ==========================================
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('zh-CN', { hour12: false });
-            const dateString = now.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit', weekday: 'short' });
-            document.getElementById('clock').textContent = `${dateString} ${timeString}`;
-        }
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        // ==========================================
-        // 6. 真实天气 + 物理位置
-        // ==========================================
-        const weatherEl = document.getElementById('weather');
-
-        const weatherCodeMap = {
-            0: '晴', 1: '大部晴朗', 2: '多云', 3: '阴',
-            45: '雾', 48: '霜雾',
-            51: '小毛毛雨', 53: '毛毛雨', 55: '大毛毛雨',
-            56: '冻毛毛雨', 57: '强冻毛毛雨',
-            61: '小雨', 63: '中雨', 65: '大雨',
-            66: '冻雨', 67: '强冻雨',
-            71: '小雪', 73: '中雪', 75: '大雪',
-            77: '雪粒',
-            80: '小阵雨', 81: '中阵雨', 82: '强阵雨',
-            85: '小阵雪', 86: '大阵雪',
-            95: '雷暴', 96: '雷暴伴小冰雹', 99: '雷暴伴大冰雹'
-        };
-
-        function getWeatherDesc(code) {
-            return weatherCodeMap[code] || '未知';
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = particle.color;
+          ctx.beginPath();
+          ctx.arc(x, y, size, 0, TAU);
+          ctx.fill();
         }
 
-        async function fetchLocationName(lat, lon) {
-            try {
-                const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=zh`);
-                const data = await res.json();
-                return data.city || data.locality || data.principalSubdivision || '当前位置';
-            } catch (e) {
-                console.warn('位置获取失败:', e);
-                return '当前位置';
-            }
-        }
+        ctx.globalAlpha = 1;
+        rafId = window.requestAnimationFrame(drawFrame);
+      }
 
-        async function fetchWeatherData(lat, lon) {
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&timezone=auto`;
-            const res = await fetch(url);
-            const data = await res.json();
-            const current = data.current;
-            return {
-                temp: current.temperature_2m,
-                code: current.weather_code
-            };
-        }
+      document.body.classList.add("is-intro");
+      if (main) main.setAttribute("inert", "");
 
-        async function updateWeatherAndLocation(lat, lon) {
-            try {
-                const [locationName, weatherData] = await Promise.all([
-                    fetchLocationName(lat, lon),
-                    fetchWeatherData(lat, lon)
-                ]);
+      resizeCanvas();
+      buildParticles();
 
-                const desc = getWeatherDesc(weatherData.code);
-                weatherEl.textContent = `${locationName} · ${desc} ${weatherData.temp}℃`;
-            } catch (error) {
-                console.error('天气/位置获取失败:', error);
-                weatherEl.textContent = '获取失败，请检查网络';
-            }
-        }
+      if (finished) return;
 
-        function initWeather() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const lat = position.coords.latitude.toFixed(2);
-                        const lon = position.coords.longitude.toFixed(2);
-                        updateWeatherAndLocation(lat, lon);
-                    },
-                    (error) => {
-                        console.warn('定位失败，使用默认位置(北京):', error.message);
-                        updateWeatherAndLocation(39.90, 116.41);
-                    },
-                    { timeout: 5000 }
-                );
-            } else {
-                updateWeatherAndLocation(39.90, 116.41);
-            }
-        }
-        initWeather();
+      startTime = performance.now();
+      rafId = window.requestAnimationFrame(drawFrame);
 
-        // ==========================================
-        // 7. Bing 搜索
-        // ==========================================
-        const searchInput = document.getElementById('search-input');
-        const searchBtn = document.getElementById('search-btn');
+      formedTimer = window.setTimeout(function () {
+        intro.classList.add("is-formed");
+      }, FORMED_AT);
+      revealTimer = window.setTimeout(revealPage, REVEAL_AT);
+      endTimer = window.setTimeout(finishIntro, END_AT);
 
-        function doSearch() {
-            const query = searchInput.value.trim();
-            if (!query) {
-                searchInput.focus();
-                return;
-            }
-            window.open(`https://www.bing.com/search?q=${encodeURIComponent(query)}`, '_blank');
-        }
-
-        searchBtn.addEventListener('click', doSearch);
-
-        searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                doSearch();
-            }
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-                e.preventDefault();
-                searchInput.focus();
-            }
-            if (e.key === 'Escape' && document.activeElement === searchInput) {
-                searchInput.blur();
-                searchInput.value = '';
-            }
-        });
-
-        // ==========================================
-        // 8. 微信复制
-        // ==========================================
-        const wechatCard = document.getElementById('wechat-copy');
-        const toast = document.getElementById('toast');
-        const wechatId = 'xin439587975';
-        let toastTimer = null;
-
-        function showToast() {
-            toast.classList.add('show');
-            if (toastTimer) clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        function fallbackCopyText(text) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'fixed';
-            textArea.style.opacity = '0';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                showToast();
-            } catch (err) {
-                console.error('降级复制失败:', err);
-            }
-            document.body.removeChild(textArea);
-        }
-
-        wechatCard.addEventListener('click', function() {
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(wechatId).then(() => {
-                    showToast();
-                }).catch(err => {
-                    console.error('Clipboard API 复制失败，尝试降级方案', err);
-                    fallbackCopyText(wechatId);
-                });
-            } else {
-                fallbackCopyText(wechatId);
-            }
-        });
-    </script>
-
+      window.addEventListener("pointerdown", onSkip, { passive: true });
+      window.addEventListener("keydown", onKeydown);
+    })();
+  </script>
 </body>
 </html>
